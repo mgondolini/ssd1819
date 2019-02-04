@@ -11,27 +11,39 @@
 <body>
     <div class="container">
         <div class="well well-lg" id="well">
-            <input type="text" class="form-control" id="txtId" aria-describedby="id" placeholder="Enter id" style="margin:20px">
-            <div class="well well-lg" style="margin:20px">
-                <button id="findall" class="btn btn-primary" onclick="findAll();">Read All</button>
-                <button id="findById" class="btn btn-primary" onclick="findById();">Find by id</button>
-                <button id="readHttp" class="btn btn-primary" onclick="getInstance();">Read http</button>
-                <button id="postHtpp" class="btn btn-primary" onclick="postSomething(3, 'tre');">Post http</button>
-                <button id="readGAP" class="btn btn-primary" onclick="readGAPinstance();">Read GAP</button>
-            </div>
+            <h2>Seleziona GAP</h2>
+            <form>
+                <div class="form-group">
+                    <select class="form-control" id="gap_name">
+                        <option value="trivial">trivial</option>
+                        <option value="toy">toy</option>
+                        <option value="example8x3">example8x3</option>
+                        <option value="arica">arica</option>
+                        <option value="baghdad">baghdad</option>
+                        <option value="bogota">bogota</option>
+                        <option value="budapest">budapest</option>
+                    </select>
+                    <button type="button" class="btn btn-default" onclick="">Vai</button>
+                </div>
+            </form>
+            <!--<input type="text" class="form-control" id="txtId" aria-describedby="id" placeholder="Enter id" style="margin:20px">-->
+            <button id="findall" class="btn btn-primary" onclick="findAll();">Read All</button>
+            <button id="findById" class="btn btn-primary" onclick="findById();">Find by id</button>
+            <button id="readHttp" class="btn btn-primary" onclick="getInstance();">Read http</button>
+            <button id="postHtpp" class="btn btn-primary" onclick="postSomething(3, 'tre');">Post http</button>
+            <button id="readGAP" class="btn btn-primary" onclick="readGAPinstance();">Read GAP</button>
         </div>
         <div class="well well-lg" id="well">
             <h2>Seleziona la serie storica</h2>
             <form>
                 <div class="form-group">
-
                     <select class="form-control" id="serie_name">
                         <option value="esempio">esempio</option>
                         <option value="esempio2">esempio2</option>
                         <option value="jewelry">jewelry</option>
                     </select>
                     <button type="button" class="btn btn-default" onclick="loadSerie()">Vai</button>
-
+                </div>
             </form>
             <button id="readSerie" class="btn btn-primary" onclick="readSerie()">Read Serie</button>
             <button id="constructSolution" class="btn btn-primary" onclick="constructSolution()">Construct Solution</button>
