@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Progetto SSD</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="JavaScript.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body onload="init()">
+        <div class="container" style="padding:100px">
+            <div class="well well-lg" id="well">
+                <input type="text" class="form-control" id="txtId" aria-describedby="id" placeholder="Enter id" style="margin:20px">
+                <!-- esempio bootstrap -->
+                <div class="well well-lg" style="margin:20px">
+                    <button id="findall" class="btn btn-primary" onclick="findAll();">Read All</button>
+                    <button id="findById" class="btn btn-primary" onclick="findById();">Find by id</button>
+                    <button id="readHttp" class="btn btn-primary" onclick="getInstance();">Read http</button>
+                    <button id="postHtpp" class="btn btn-primary" onclick="postSomething(3, 'tre');">Post http</button>
+                    <button id="readGAP" class="btn btn-primary" onclick="readGAPinstance();">Read GAP</button>
+                </div>
+                <div class="well well-lg" style="margin:20px">
+                    <button id="readSerie" class="btn btn-primary" onclick="readSerie()">Read Serie</button>
+                    <button id="constructSolution" class="btn btn-primary" onclick="constructSolution()">Construct Solution</button>
+                    <button id="optimization" class="btn btn-primary" onclick="optimization()">Optimization</button>
+                    <button id="simulatedAnnealing" class="btn btn-primary" onclick="simulatedAnnealing()">Simulated Annealing</button>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
