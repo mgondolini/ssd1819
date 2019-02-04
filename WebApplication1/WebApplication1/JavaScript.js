@@ -1,9 +1,4 @@
-﻿
-function init() {
-    alert('init')
-}
-
-function findAll() {
+﻿function findAll() {
     $.ajax({
         url: "api/Clienti/GetAllClients",
         type: "GET",
