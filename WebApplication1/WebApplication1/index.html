@@ -9,12 +9,12 @@
     <script src="JavaScript.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="margin-top: 20px">
         <div class="well well-lg" id="well">
             <h2>Seleziona GAP</h2>
             <form>
                 <div class="form-group">
-                    <select class="form-control" id="gap_name">
+                    <select class="form-control" id="gap_name" style="margin-bottom: 10px">
                         <option value="trivial">trivial</option>
                         <option value="toy">toy</option>
                         <option value="example8x3">example8x3</option>
@@ -23,7 +23,10 @@
                         <option value="bogota">bogota</option>
                         <option value="budapest">budapest</option>
                     </select>
-                    <button type="button" class="btn btn-default" onclick="">Vai</button>
+                    <button id="readGAP" class="btn btn-primary" onclick="readGAPinstance();">Read GAP</button>
+                    <button id="constructSolution" class="btn btn-primary" onclick="constructSolution()">Construct Solution</button>
+                    <button id="optimization" class="btn btn-primary" onclick="optimization()">Optimization</button>
+                    <button id="simulatedAnnealing" class="btn btn-primary" onclick="simulatedAnnealing()">Simulated Annealing</button>
                 </div>
             </form>
             <!--<input type="text" class="form-control" id="txtId" aria-describedby="id" placeholder="Enter id" style="margin:20px">-->
@@ -31,7 +34,7 @@
             <button id="findById" class="btn btn-primary" onclick="findById();">Find by id</button>
             <button id="readHttp" class="btn btn-primary" onclick="getInstance();">Read http</button>
             <button id="postHtpp" class="btn btn-primary" onclick="postSomething(3, 'tre');">Post http</button>
-            <button id="readGAP" class="btn btn-primary" onclick="readGAPinstance();">Read GAP</button>
+
         </div>
         <div class="well well-lg" id="well">
             <h2>Seleziona la serie storica</h2>
@@ -42,13 +45,9 @@
                         <option value="esempio2">esempio2</option>
                         <option value="jewelry">jewelry</option>
                     </select>
-                    <button type="button" class="btn btn-default" onclick="loadSerie()">Vai</button>
+                    <button id="readSerie" class="btn btn-primary" onclick="readSerie()">Read Serie</button>
                 </div>
             </form>
-            <button id="readSerie" class="btn btn-primary" onclick="readSerie()">Read Serie</button>
-            <button id="constructSolution" class="btn btn-primary" onclick="constructSolution()">Construct Solution</button>
-            <button id="optimization" class="btn btn-primary" onclick="optimization()">Optimization</button>
-            <button id="simulatedAnnealing" class="btn btn-primary" onclick="simulatedAnnealing()">Simulated Annealing</button>
         </div>
     </div>
 </body>
