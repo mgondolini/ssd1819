@@ -25,47 +25,13 @@ namespace WebApplication1.Controllers
         public delegate void viewEventHandler(object sender, string textToWrite);
         public event viewEventHandler FlushText;
 
-        [HttpGet] // in esecuzione solo con un get dal client
-        [ActionName("GetAllClients")] // nome del metodo esposto nella API
-
-        public string GetAllClients()
-        {
-            string res;
-            Models.GAPinstance GAP = new Models.GAPinstance();
-            Models.Model M = new Models.Model();
-            string pathjson = @"C:\Users\monyg\source\repos\WebApplication1\WebApplication1\App_Data\toy.json";
-            GAP = M.readGAPInstance(pathjson);
-            res = GAP.name;
-            return res;
-        }
-
-        [HttpGet] // in esecuzione solo con un get dal client
-        [ActionName("GetCustQuantities")] // nome del metodo esposto
-        public IHttpActionResult GetCustQuantities(int id)
-        {
-            var user = "{\"id\":" + id + "}";
-
-            if (user == null)
-                return NotFound();
-            return Ok(user);
-        }
-
-        public string getItem(string id)
-        {
-            string res = "non trovato";
-
-            res = "{\"id\":" + id + "}";
-
-            return res;
-        }
-
         [HttpGet]
         [Route("readGAPinstance/{GAPinstance}")]
         public IHttpActionResult readGAPinstance(string GAPinstance)
         {
             System.Diagnostics.Debug.WriteLine("------------------------------------------------"+GAPinstance);
             string res;
-            string pathjson = (string)AppDomain.CurrentDomain.GetData("DataDirectory") + @"\" + GAPinstance + ".json"; ;
+            string pathjson = getJsonPath(GAPinstance);
             GAP = M.readGAPInstance(pathjson);
             res = GAP.name;
             return Ok(res);
@@ -122,10 +88,12 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        [ActionName("constructSolution")]
-        public int constructSolution()
+        [Route("constructSolution/{GAPinstance}")]
+        public int constructSolution(string GAPinstance)
         {
-            return M.constructSolution();
+            string jsonpath = getJsonPath(GAPinstance);
+            GAP = M.readGAPInstance(jsonpath);
+            return M.constructSolution(GAP);
         }
 
         [HttpGet]
@@ -140,6 +108,11 @@ namespace WebApplication1.Controllers
         public int simulatedAnnealing()
         {
             return M.simulatedAnnealing();
+        }
+
+        public string getJsonPath(string gap)
+        {
+            return (string)AppDomain.CurrentDomain.GetData("DataDirectory") + @"\" + gap + ".json"; ;
         }
 
     }

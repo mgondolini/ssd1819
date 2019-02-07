@@ -12,9 +12,7 @@ namespace WebApplication1.Models
     public class Model
     {
         public delegate void viewEventHandler(object sender, string textToWrite);
-
-        private string pathjson = @"C:\Users\monyg\source\repos\WebApplication1\WebApplication1\App_Data\toy.json";
-
+        
         private GAPinstance GAP;
         private BasicHeu basicHeu;
 
@@ -80,16 +78,15 @@ namespace WebApplication1.Models
             return res;
         }
 
-        public int constructSolution()
+        public int constructSolution(GAPinstance GAP)
         {
-            GAP = readGAPInstance(pathjson);
             basicHeu = new BasicHeu(GAP);
             return basicHeu.constructFirtsSol();
         }
 
         public int opt10()
         {
-            GAP = readGAPInstance(pathjson);
+            //GAP = readGAPInstance(pathjson);
             basicHeu = new BasicHeu(GAP);
             basicHeu.constructFirtsSol();
             return basicHeu.opt10(GAP.cost);
@@ -97,7 +94,7 @@ namespace WebApplication1.Models
 
         public int simulatedAnnealing()
         {
-            GAP = readGAPInstance(pathjson);
+            //GAP = readGAPInstance(pathjson);
             basicHeu = new BasicHeu(GAP);
             return basicHeu.simulatedAnnealing();
         }
