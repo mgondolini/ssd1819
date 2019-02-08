@@ -168,8 +168,8 @@ namespace WebApplication1.Models
 
        public int simulatedAnnealing()
        {
-            int j, i, p = 0; 
-
+            int i, j, p = 0;
+            int z = 0;
             int k = 10; //costante di Boltzmann
 
             int iter = 0;
@@ -181,42 +181,37 @@ namespace WebApplication1.Models
 
             double temp = maxTemp;
 
-            int z = constructiveSolution();
+            //DA QUI
+            int initialCost = constructiveSolution();
+            int firstCost = initialCost;
 
-            int[,] cost = GAP.cost;
+            //int[,] cost = GAP.cost;
 
             int[] capleft = new int[m];
             for (i = 0; i < m; i++) capleft[i] = GAP.cap[i]; //assegno capacità
             
             Random rand = new Random(100);
 
-            bool isFinished = true;
-            while (isFinished)
-            {
-
-                if (iter < maxIter) temp = maxTemp;
-                else isFinished = false;
-                
+            while (iter < maxIter)
+            {               
                 iter++;
-
+                z = firstCost;
                 // generare sol casuale
                 j = rand.Next(0, n - 1);    //clienti
                 int isol = sol[j];      
                 i = rand.Next(0, m - 1);    //magazzini
 
-                int[] tmpSol = GAP.sol;
+                int[] tmpSol = sol;
                 tmpSol[j] = i;
                 capleft[i] -= GAP.req[i, j];
                 capleft[isol] += GAP.req[isol, j];
 
-                int lastCost = z;
+                int lastCost = firstCost;
                 lastCost -= (GAP.cost[isol, j] - GAP.cost[i, j]);
-
-                int firstCost = z;
 
                 if (lastCost < firstCost)
                 {
-                    GAP.sol = tmpSol;
+                    sol = tmpSol;
                     GAP.cap = capleft;
                     z = lastCost;
                 }
@@ -228,7 +223,7 @@ namespace WebApplication1.Models
                     int rnd = rand.Next(0, 100);
                     if (rnd < p * 100)
                     {
-                        GAP.sol = tmpSol;
+                        sol = tmpSol;
                         GAP.cap = capleft;
                         z = lastCost;
                     }
@@ -241,7 +236,7 @@ namespace WebApplication1.Models
                 }
             }
 
-            int zcheck = checkSol(GAP.sol);
+            int zcheck = checkSol(sol);
             if (z != zcheck)
             {
                 z = int.MaxValue;
