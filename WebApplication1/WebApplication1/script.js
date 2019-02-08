@@ -1,5 +1,14 @@
 ﻿var GAPinstance;
 
+$(document).ready(function () {
+    $("#gap_name").change(function () {
+        $("#solution").text("Solution: ");
+        $("#optimization").text("Optimization: ");
+        $("#simulatedAnnealing").text("Simulated Annealing: ");
+    });
+});
+
+
 function constructSolution() {
     GAPinstance = $("#gap_name").children("option:selected").val();
     $.ajax({
@@ -32,7 +41,7 @@ function optimization() {
             var err = "Error " + " " + status + " " + p3;
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).message;
-            alert(err+ "we");
+            alert(err);
         }
     });
     event.preventDefault();
