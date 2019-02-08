@@ -66,7 +66,7 @@ function simulatedAnnealing() {
     event.preventDefault();
 }
 
-
+/*
 function readSerie() {
     $.ajax({
         url: "api/Clienti/readSerie",
@@ -121,5 +121,4 @@ function readGAPinstance() {
     });
     event.preventDefault();
 }
-
-
+*/

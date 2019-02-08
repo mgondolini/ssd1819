@@ -13,8 +13,6 @@ namespace WebApplication1.Models
     {
         public delegate void viewEventHandler(object sender, string textToWrite);
 
-        private string pathjson = @"C:\Users\monyg\source\repos\WebApplication1\WebApplication1\App_Data\toy.json";
-
         private GAPinstance GAP;
         private BasicHeu basicHeu;
 
@@ -29,7 +27,6 @@ namespace WebApplication1.Models
                 System.Diagnostics.Debug.WriteLine(jstring);
                 GAP = JsonConvert.DeserializeObject<GAPinstance>(jstring);
                 fin.Close();
-
             }
             catch (Exception ex)
             {
@@ -83,13 +80,13 @@ namespace WebApplication1.Models
         public int constructSolution(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
-            return basicHeu.constructFirtsSol();
+            return basicHeu.constructiveSolution();
         }
 
         public int opt10(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
-            basicHeu.constructFirtsSol();
+            basicHeu.constructiveSolution();
             return basicHeu.opt10(GAP.cost);
         }
 

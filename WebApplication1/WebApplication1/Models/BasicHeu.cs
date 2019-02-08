@@ -15,64 +15,15 @@ namespace WebApplication1.Models
         public delegate void viewEventHandler(object sender, string textToWrite);
         public event viewEventHandler FlushText;
 
-        int n, m;
         GAPinstance GAP;
+        int n, m;
+        public int[] sol;
 
         public BasicHeu(GAPinstance gap)
         {
             GAP = gap;
             n = GAP.numCli;
             m = GAP.numServ;
-        }
-
-        public int constructFirtsSol()
-        {
-
-            //si ordinano i clienti per regret decrescenti e poi li si assegna a turno, 
-            //ordinando per ciascuno i magazzini per richieste crescenti
-
-            GAP.sol = new int[n];
-
-            int i, j, ii,z;
-
-            int[] capleft = new int[n];
-            for (i = 0; i < m; i++) capleft[i] = GAP.cap[i];
-
-
-            int[] keys = new int[m];
-            int[] ind = new int[m];
-
-            for (j = 0; j < n; j++)
-            {
-                for (i = 0; i < m; i++)
-                {
-                    keys[i] = GAP.req[i, j];
-                    ind[i] = i;
-                }
-
-                Array.Sort(keys, ind); // ordina in base alle richieste crescenti
-
-                for (ii = 0; ii < m; ii++)
-                {
-                    i = ind[ii];
-                    if (capleft[i] >= GAP.req[i, j])
-                    {
-                        GAP.sol[j] = i; //ad ogni cliente viene associato un magazzino
-                        capleft[i] -= GAP.req[i, j]; //riduzione capacità rimanenti
-                        break;
-                    }
-                    if (ii == m)
-                    {
-                        z = 0;
-                        goto lend;
-                    }
-                }
-            }
-
-            lend:
-            z = checkSol(GAP.sol);
-
-            return z;
         }
 
         public int checkSol(int[] sol)
@@ -82,7 +33,7 @@ namespace WebApplication1.Models
             for (i = 0; i < m; i++) capused[i] = 0;
 
             // controllo assegnamenti
-            for (j = 0; j < n; j++)
+            for (j = 0; j < n; j++) { 
                 if (sol[j] < 0 || sol[j] >= m)
                 {
                     z = int.MaxValue;
@@ -92,6 +43,7 @@ namespace WebApplication1.Models
                 {
                     z += GAP.cost[sol[j], j];
                 }
+            }
 
             // controllo capacità
             for (j = 0; j < n; j++)
@@ -106,56 +58,109 @@ namespace WebApplication1.Models
             return z;
         }
 
+        public int constructiveSolution()
+        {
+
+            //si ordinano i clienti per regret decrescenti e poi li si assegna a turno, 
+            //ordinando per ciascuno i magazzini per richieste crescenti
+            int ii, z;
+            sol = new int[n];
+
+            int[] capleft = new int[n];
+            for (int i = 0; i < m; i++) capleft[i] = GAP.cap[i];
+
+
+            int[] keys = new int[m];
+            int[] index = new int[m];
+
+            for (int j = 0; j < n; j++)
+            {
+                for (int i = 0; i < m; i++)
+                {
+                    keys[i] = GAP.req[i, j];
+                    index[i] = i;
+                }
+                Array.Sort(keys, index); // ordina in base alle richieste crescenti
+              
+                for (ii = 0; ii < m; ii++)
+                {
+                    int i = index[ii];
+                    //se la capactià del server è sufficiente assegno il client a quel server
+                    if (capleft[i] >= GAP.req[i, j])
+                    {
+                        sol[j] = i; //ad ogni cliente viene associato un magazzino
+                        capleft[i] -= GAP.req[i, j]; //riduzione capacità rimanenti
+                        break;
+                    }
+                    if (ii == m)
+                    {
+                        z = 0;
+                        goto lend;
+                    }
+                }
+            }
+
+            lend:
+            z = checkSol(sol);
+            GAP.zub = z;
+            return z;
+        }
 
         public int opt10(int[,] cost)
         {
             /*Si considera a turno ogni client e si prova a riassegnarlo ad ogni altro magazzino
             che ha capacità residua sufficiente.*/
 
-            int z = 0;
-            int i, j = 0;
-            bool isImproved;
+            int z = 0, isol = 0;
+            int[,] req = GAP.req;
+            bool isImproved = true;
 
             int[] capleft = new int[m];
-            for (i = 0; i < m; i++)
+            for (int i = 0; i < m; i++) capleft[i] = GAP.cap[i]; //assegno capacità
+            
+
+            for(int j = 0; j< n; j++)
             {
-                capleft[i] = GAP.cap[i]; //assegno capacità
+                //capleft[GAP.sol[j]] -= GAP.req[GAP.sol[j], j]; //riduco le capacità
+                z += GAP.cost[sol[j], j]; //soluzione: costo del server per il client
             }
 
-            for(j = 0; j< n; j++)
-            {
-                capleft[GAP.sol[j]] -= GAP.req[GAP.sol[j], j]; //riduco le capacità
-                z += GAP.cost[GAP.sol[j], j]; //soluzione: costo del server per il client
-            }
-
-            do
+            while (isImproved)
             {
                 isImproved = false;
-                for (j = 0; j < n; j++)
+                for (int j = 0; j < n; j++)
                 {         
-                    for (i = 0; i < m; i++)
+                    for (int i = 0; i < m; i++)
                     {
-                        if (cost[i,j] < cost[GAP.sol[j],j] && capleft[i] >= GAP.req[i,j]){ //costo attuale < costo e ci sono capacità rimanenti
+                        isol = sol[j];
+                        if ( i != isol && cost[i,j] < cost[isol, j] && capleft[i] >= req[i,j]){ //costo attuale < costo e ci sono capacità rimanenti
 
-                            z -= cost[GAP.sol[j], j] - cost[i, j]; //costo iniziale - costo attuale
-                            capleft[GAP.sol[j]] += GAP.req[GAP.sol[j], j]; //riduco capacità dei clienti
-                            
-                            GAP.sol[j] = i; //assegno server
-                            capleft[i] -= GAP.req[i,j]; //riduco capacità dei server
+                            sol[j] = i; //assegno server
+                            capleft[i] -= req[i, j]; //riduco capacità dei server
+                            capleft[isol] += req[isol, j]; //riduco capacità dei clienti
+                            z -= (cost[isol, j] - cost[i, j]); //costo iniziale - costo attuale
 
                             System.Diagnostics.Debug.WriteLine("opt10, improvement. z=" + z);
                             isImproved = true;
-                            break;
+
+                            if(z < GAP.zub)
+                            {
+                                GAP.zub = z;
+                            }
                         }
                     }
                 }
-                if (isImproved) break;
-            } while (isImproved);
+            }
 
-            int zcheck = checkSol(GAP.sol);
-            if(z != zcheck)
+            double zcheck = 0;
+            for (int j = 0; j < n; j++)
             {
-                z = int.MaxValue;
+                zcheck += cost[sol[j], j];
+            }
+            if (Math.Abs(z - zcheck) > 0.01)
+            {
+                System.Diagnostics.Debug.WriteLine("Solution is different of: " + Math.Abs(z - zcheck) + " should not be that!");
+                return -1;
             }
             return z;
         }
@@ -176,9 +181,8 @@ namespace WebApplication1.Models
 
             double temp = maxTemp;
 
-            int z = constructFirtsSol();
+            int z = constructiveSolution();
 
-            int[] sol = GAP.sol;
             int[,] cost = GAP.cost;
 
             int[] capleft = new int[m];
@@ -197,7 +201,7 @@ namespace WebApplication1.Models
 
                 // generare sol casuale
                 j = rand.Next(0, n - 1);    //clienti
-                int isol = GAP.sol[j];      
+                int isol = sol[j];      
                 i = rand.Next(0, m - 1);    //magazzini
 
                 int[] tmpSol = GAP.sol;
