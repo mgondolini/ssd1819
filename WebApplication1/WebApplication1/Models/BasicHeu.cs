@@ -15,8 +15,8 @@ namespace WebApplication1.Models
         public delegate void viewEventHandler(object sender, string textToWrite);
         public event viewEventHandler FlushText;
 
-        GAPinstance GAP;
-        int n, m;
+        private GAPinstance GAP;
+        private int n, m;
         public int[] sol;
 
         public BasicHeu(GAPinstance gap)
@@ -120,11 +120,9 @@ namespace WebApplication1.Models
             
 
             for(int j = 0; j< n; j++)
-            {
-                //capleft[GAP.sol[j]] -= GAP.req[GAP.sol[j], j]; //riduco le capacità
                 z += GAP.cost[sol[j], j]; //soluzione: costo del server per il client
-            }
-
+            
+        
             while (isImproved)
             {
                 isImproved = false;
@@ -133,7 +131,7 @@ namespace WebApplication1.Models
                     for (int i = 0; i < m; i++)
                     {
                         isol = sol[j];
-                        if ( i != isol && cost[i,j] < cost[isol, j] && capleft[i] >= req[i,j]){ //costo attuale < costo e ci sono capacità rimanenti
+                        if (i != isol && cost[i,j] < cost[isol, j] && capleft[i] >= req[i,j]){ //costo attuale < costo e ci sono capacità rimanenti
 
                             sol[j] = i; //assegno server
                             capleft[i] -= req[i, j]; //riduco capacità dei server
@@ -157,11 +155,12 @@ namespace WebApplication1.Models
             {
                 zcheck += cost[sol[j], j];
             }
+
             if (Math.Abs(z - zcheck) > 0.01)
             {
-                System.Diagnostics.Debug.WriteLine("Solution is different of: " + Math.Abs(z - zcheck) + " should not be that!");
                 return -1;
             }
+
             return z;
         }
 
@@ -169,9 +168,8 @@ namespace WebApplication1.Models
        public int simulatedAnnealing()
        {
             int i, j, p = 0;
-            int z = 0;
             int k = 10; //costante di Boltzmann
-
+            int z = 0;
             int iter = 0;
 
             double maxTemp = 1000;
@@ -182,10 +180,7 @@ namespace WebApplication1.Models
             double temp = maxTemp;
 
             //DA QUI
-            int initialCost = constructiveSolution();
-            int firstCost = initialCost;
-
-            //int[,] cost = GAP.cost;
+            int currentCost = constructiveSolution();
 
             int[] capleft = new int[m];
             for (i = 0; i < m; i++) capleft[i] = GAP.cap[i]; //assegno capacità
@@ -195,37 +190,40 @@ namespace WebApplication1.Models
             while (iter < maxIter)
             {               
                 iter++;
-                z = firstCost;
-                // generare sol casuale
-                j = rand.Next(0, n - 1);    //clienti
-                int isol = sol[j];      
-                i = rand.Next(0, m - 1);    //magazzini
+                z = currentCost;
+                int isol;
 
-                int[] tmpSol = sol;
+                do {
+                    // generare sol casuale
+                    j = rand.Next(0, n - 1);    //clienti
+                    isol = sol[j];
+                    i = rand.Next(0, m - 1);    //magazzini
+                } while (capleft[i] < GAP.req[i, j] || isol == i);
+
+                int[] tmpSol = (int[]) sol.Clone();
                 tmpSol[j] = i;
                 capleft[i] -= GAP.req[i, j];
                 capleft[isol] += GAP.req[isol, j];
 
-                int lastCost = firstCost;
-                lastCost -= (GAP.cost[isol, j] - GAP.cost[i, j]);
+                z -= (GAP.cost[isol, j] - GAP.cost[i, j]);
 
-                if (lastCost < firstCost)
+                if (z < currentCost)
                 {
-                    sol = tmpSol;
-                    GAP.cap = capleft;
-                    z = lastCost;
+                    sol = (int[]) tmpSol.Clone();
+                    GAP.cap = (int[])capleft.Clone();
+                    currentCost = z;
                 }
                 else if (capleft[i] >= GAP.req[i, j])
                 {
                     //capacità rimanenti
-                    p = (int)Math.Exp(-(firstCost - lastCost) / (k * temp));
+                    p = (int)Math.Exp(-(z - currentCost) / (k * temp));
 
                     int rnd = rand.Next(0, 100);
                     if (rnd < p * 100)
                     {
-                        sol = tmpSol;
-                        GAP.cap = capleft;
-                        z = lastCost;
+                    sol = (int[]) tmpSol.Clone();
+                    GAP.cap = (int[])capleft.Clone();
+                    currentCost = z;
                     }
                 }
 
@@ -242,7 +240,7 @@ namespace WebApplication1.Models
                 z = int.MaxValue;
             }
 
-            return z;
+            return 1111;
         }
 
     }
