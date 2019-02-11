@@ -105,6 +105,9 @@
     <Content Include="App_Data\baghdad.json" />
     <Content Include="App_Data\bogota.json" />
     <Content Include="App_Data\budapest.json" />
+    <Content Include="App_Data\elba.json" />
+    <Content Include="App_Data\ForliCesenaGAP.json" />
+    <Content Include="App_Data\gap1_0.json" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -16,7 +16,7 @@ namespace WebApplication1.Models
         private GAPinstance GAP;
         private BasicHeu basicHeu;
 
-        public GAPinstance readGAPInstance(string path)
+        public GAPinstance ReadGAPInstance(string path)
         {
             StreamReader fin;
 
@@ -35,7 +35,7 @@ namespace WebApplication1.Models
             return GAP;
         }
 
-        public string readSerie(string connString, string factory)
+        public string ReadSerie(string connString, string factory)
         {
             System.Diagnostics.Debug.WriteLine("connstring " + connString + " factory" + factory);
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
@@ -77,20 +77,20 @@ namespace WebApplication1.Models
             return res;
         }
 
-        public int constructSolution(GAPinstance instance)
+        public int ConstructSolution(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
             return basicHeu.ConstructiveSolution();
         }
 
-        public int opt10(GAPinstance instance)
+        public int Opt10(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
             basicHeu.ConstructiveSolution();
             return basicHeu.Opt10(GAP.cost);
         }
 
-        public int simulatedAnnealing(GAPinstance instance)
+        public int SimulatedAnnealing(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
             return basicHeu.GenerateSimulatedAnnealing();

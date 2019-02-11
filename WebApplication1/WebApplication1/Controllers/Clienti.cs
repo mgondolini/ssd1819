@@ -34,7 +34,7 @@ namespace WebApplication1.Controllers
             Models.GAPinstance GAP = new Models.GAPinstance();
             Models.Model M = new Models.Model();
             string pathjson = @"C:\Users\monyg\source\repos\WebApplication1\WebApplication1\App_Data\toy.json";
-            GAP = M.readGAPInstance(pathjson);
+            GAP = M.ReadGAPInstance(pathjson);
             res = GAP.name;
             return res;
         }
@@ -64,8 +64,8 @@ namespace WebApplication1.Controllers
         public IHttpActionResult readGAPinstance(string instance)
         {
             string res;
-            string pathjson = getJsonPath(instance);
-            GAP = M.readGAPInstance(pathjson);
+            string pathjson = GetJsonPath(instance);
+            GAP = M.ReadGAPInstance(pathjson);
             res = GAP.name;
             return Ok(res);
         }
@@ -74,7 +74,7 @@ namespace WebApplication1.Controllers
         [ActionName("readSerie")] // nome del metodo esposto nella API
         public string readSerie()
         {
-            string res = M.readSerie(connString, factory);
+            string res = M.ReadSerie(connString, factory);
             return res;
         }
 
@@ -122,34 +122,34 @@ namespace WebApplication1.Controllers
 
         [HttpGet]
         [Route("constructSolution/{instance}")]
-        public int constructSolution(string instance)
+        public int ConstructSolution(string instance)
         {
-            return M.constructSolution(getGAP(instance));
+            return M.ConstructSolution(GetGAP(instance));
         }
 
         [HttpGet]
         [Route("optimization/{instance}")]
-        public int optimization(string instance)
+        public int Optimization(string instance)
         {
-            return M.opt10(getGAP(instance));
+            return M.Opt10(GetGAP(instance));
         }
 
         [HttpGet]
         [Route("simulatedAnnealing/{instance}")]
         public int simulatedAnnealing(string instance)
         {
-            return M.simulatedAnnealing(getGAP(instance));
+            return M.SimulatedAnnealing(GetGAP(instance));
         }
 
-        public string getJsonPath(string gap)
+        public string GetJsonPath(string gap)
         {
             return (string)AppDomain.CurrentDomain.GetData("DataDirectory") + @"\" + gap + ".json"; ;
         }
 
-        public GAPinstance getGAP(string instance)
+        public GAPinstance GetGAP(string instance)
         {
-            string jsonpath = getJsonPath(instance);
-            return GAP = M.readGAPInstance(jsonpath);
+            string jsonpath = GetJsonPath(instance);
+            return GAP = M.ReadGAPInstance(jsonpath);
         }
 
     }
