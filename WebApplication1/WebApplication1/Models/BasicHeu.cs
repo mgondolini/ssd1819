@@ -15,12 +15,14 @@ namespace WebApplication1.Models
         private GAPinstance GAP;
         private int n, m;
         public int[] sol;
+        int[] capacitiesLeft;
 
         public BasicHeu(GAPinstance gap)
         {
             GAP = gap;
             n = GAP.numCli;
             m = GAP.numServ;
+            capacitiesLeft = (int[])GAP.cap.Clone();
         }
 
         public int CheckSol(int[] sol)
@@ -169,7 +171,7 @@ namespace WebApplication1.Models
             return CheckSol(sol);
         }
 
-       public int[] SimulatedAnnealing(int[] solution, int firstCost)
+       public int[] SimulatedAnnealing(int[] currentSol, int currentCost)
        {
             int i, j, p = 0;
             int k = 10; //costante di Boltzmann
@@ -177,13 +179,14 @@ namespace WebApplication1.Models
             int iter = 0;
 
             double maxTemp = 1000;
-            int maxIter = 1000;
+            int maxIter = 100000;
             double alpha = 0.95; //geometric cooling
 
-            double temp = maxTemp;
+            double temp = 2;
+
 
             //DA QUI
-            int cost = firstCost;
+            int bestCost = currentCost;
 
             Random rand = new Random(100);
             int treshold = 0;
@@ -191,65 +194,63 @@ namespace WebApplication1.Models
             while (iter < maxIter)
             {               
                 iter++;
-                int z = cost;
+                int newCost = bestCost;
                 int isol;
 
 
                 //1000 numero di step decisi da me
-                if ((iter % 1000) == 0)
+                if ((iter % 10000) == 0)
                 {
                     temp = alpha * temp;  //decremento temp
                 }
 
-                System.Diagnostics.Debug.WriteLine("cost=" + cost);
-
-                int[] capleft = new int[m];
-                for (i = 0; i < m; i++) capleft[i] = GAP.cap[i]; //assegno capacità
+                int[] capleft = (int[]) capacitiesLeft.Clone();
+               
 
                 do
                 {
                     treshold++;
                     //generare sol casuale
-                    j = rand.Next(0, n - 1);    //clienti
-                    isol = solution[j];
-                    i = rand.Next(0, m - 1);    //magazzini
+                    j = rand.Next(n);    //clienti
+                    isol = currentSol[j];
+                    i = rand.Next(m);    //magazzini
                     if (treshold == 1000)
                     {
-                        return solution;
+                        return currentSol;
                     }
                 } while (capleft[i] < GAP.req[i, j] || isol == i);
 
                 treshold = 0;
 
-                int[] tmpSol = (int[]) solution.Clone();
-                tmpSol[j] = i;
+                int[] newSol = (int[]) currentSol.Clone();
+                newSol[j] = i;
                 capleft[i] -= GAP.req[i, j];
                 capleft[isol] += GAP.req[isol, j];
 
-                z -= (GAP.cost[isol, j] - GAP.cost[i, j]);
+                newCost -= (GAP.cost[isol, j] - GAP.cost[i, j]);
 
-                if (z < cost)
+                if (newCost < bestCost)
                 {
-                    solution = (int[]) tmpSol.Clone();
-                    GAP.cap = (int[]) capleft.Clone();
-                    cost = z;
+                    currentSol = (int[]) newSol.Clone();
+                    capacitiesLeft = (int[]) capleft.Clone();
+                    bestCost = newCost;
                 }
                 else if (capleft[i] >= GAP.req[i, j])
                 {
                     //capacità rimanenti
-                    p = (int)Math.Exp(-(z - cost) / (k * temp));
+                    p = (int)Math.Exp(-(newCost - bestCost) / (k * temp));
 
                     int rnd = rand.Next(0, 100);
                     if (rnd < p * 100)
                     {
-                        solution = (int[]) tmpSol.Clone();
-                        GAP.cap = (int[]) capleft.Clone();
-                        cost = z;
+                        currentSol = (int[]) newSol.Clone();
+                        capacitiesLeft = (int[]) capleft.Clone();
+                        bestCost = newCost;
                     }
                 }
             }
 
-            return solution;
+            return currentSol;
         }
 
     }
