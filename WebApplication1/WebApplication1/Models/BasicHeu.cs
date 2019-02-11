@@ -169,7 +169,7 @@ namespace WebApplication1.Models
        {
             int i, j, p = 0;
             int k = 10; //costante di Boltzmann
-            //int z = 0;
+           
             int iter = 0;
 
             double maxTemp = 1000;
@@ -180,8 +180,6 @@ namespace WebApplication1.Models
 
             //DA QUI
             int cost = constructiveSolution();
-
-
 
             Random rand = new Random(100);
             int treshold = 0;
