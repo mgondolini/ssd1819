@@ -80,20 +80,20 @@ namespace WebApplication1.Models
         public int constructSolution(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
-            return basicHeu.constructiveSolution();
+            return basicHeu.ConstructiveSolution();
         }
 
         public int opt10(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
-            basicHeu.constructiveSolution();
-            return basicHeu.opt10(GAP.cost);
+            basicHeu.ConstructiveSolution();
+            return basicHeu.Opt10(GAP.cost);
         }
 
         public int simulatedAnnealing(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
-            return basicHeu.simulatedAnnealing();
+            return basicHeu.GenerateSimulatedAnnealing();
         }
 
     }

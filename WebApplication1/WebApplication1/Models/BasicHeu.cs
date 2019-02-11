@@ -12,9 +12,6 @@ namespace WebApplication1.Models
 {
     class BasicHeu
     {
-        public delegate void viewEventHandler(object sender, string textToWrite);
-        public event viewEventHandler FlushText;
-
         private GAPinstance GAP;
         private int n, m;
         public int[] sol;
@@ -26,7 +23,7 @@ namespace WebApplication1.Models
             m = GAP.numServ;
         }
 
-        public int checkSol(int[] sol)
+        public int CheckSol(int[] sol)
         {
             int z = 0, j, i;
             int[] capused = new int[n];
@@ -58,7 +55,7 @@ namespace WebApplication1.Models
             return z;
         }
 
-        public int constructiveSolution()
+        public int ConstructiveSolution()
         {
 
             //si ordinano i clienti per regret decrescenti e poi li si assegna a turno, 
@@ -101,12 +98,12 @@ namespace WebApplication1.Models
             }
 
             lend:
-            z = checkSol(sol);
+            z = CheckSol(sol);
             GAP.zub = z;
             return z;
         }
 
-        public int opt10(int[,] cost)
+        public int Opt10(int[,] cost)
         {
             /*Si considera a turno ogni client e si prova a riassegnarlo ad ogni altro magazzino
             che ha capacità residua sufficiente.*/
@@ -164,8 +161,15 @@ namespace WebApplication1.Models
             return z;
         }
 
+        
+       public int GenerateSimulatedAnnealing()
+        {
+            int z = this.ConstructiveSolution();
+            sol = SimulatedAnnealing(sol, z);
+            return CheckSol(sol);
+        }
 
-       public int simulatedAnnealing()
+       public int[] SimulatedAnnealing(int[] solution, int firstCost)
        {
             int i, j, p = 0;
             int k = 10; //costante di Boltzmann
@@ -173,13 +177,13 @@ namespace WebApplication1.Models
             int iter = 0;
 
             double maxTemp = 1000;
-            int maxIter = 10;
+            int maxIter = 1000;
             double alpha = 0.95; //geometric cooling
 
             double temp = maxTemp;
 
             //DA QUI
-            int cost = constructiveSolution();
+            int cost = firstCost;
 
             Random rand = new Random(100);
             int treshold = 0;
@@ -190,6 +194,13 @@ namespace WebApplication1.Models
                 int z = cost;
                 int isol;
 
+
+                //1000 numero di step decisi da me
+                if ((iter % 1000) == 0)
+                {
+                    temp = alpha * temp;  //decremento temp
+                }
+
                 System.Diagnostics.Debug.WriteLine("cost=" + cost);
 
                 int[] capleft = new int[m];
@@ -198,19 +209,19 @@ namespace WebApplication1.Models
                 do
                 {
                     treshold++;
-                    // generare sol casuale
+                    //generare sol casuale
                     j = rand.Next(0, n - 1);    //clienti
-                    isol = sol[j];
+                    isol = solution[j];
                     i = rand.Next(0, m - 1);    //magazzini
-                    if (treshold == 10000000)
+                    if (treshold == 1000)
                     {
-                        return cost;
+                        return solution;
                     }
                 } while (capleft[i] < GAP.req[i, j] || isol == i);
 
                 treshold = 0;
 
-                int[] tmpSol = (int[]) sol.Clone();
+                int[] tmpSol = (int[]) solution.Clone();
                 tmpSol[j] = i;
                 capleft[i] -= GAP.req[i, j];
                 capleft[isol] += GAP.req[isol, j];
@@ -219,7 +230,7 @@ namespace WebApplication1.Models
 
                 if (z < cost)
                 {
-                    sol = (int[]) tmpSol.Clone();
+                    solution = (int[]) tmpSol.Clone();
                     GAP.cap = (int[]) capleft.Clone();
                     cost = z;
                 }
@@ -231,26 +242,14 @@ namespace WebApplication1.Models
                     int rnd = rand.Next(0, 100);
                     if (rnd < p * 100)
                     {
-                        sol = (int[]) tmpSol.Clone();
+                        solution = (int[]) tmpSol.Clone();
                         GAP.cap = (int[]) capleft.Clone();
                         cost = z;
                     }
                 }
-
-                //1000 numero di step decisi da me
-                if ((iter % 1000) == 0)
-                {
-                    temp = alpha * temp;  //decremento temp
-                }
             }
 
-            int zcheck = checkSol(sol);
-            if (cost != zcheck)
-            {
-                cost = int.MaxValue;
-            }
-
-            return cost;
+            return solution;
         }
 
     }
