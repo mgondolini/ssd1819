@@ -61,7 +61,7 @@ namespace WebApplication1.Controllers
 
         [HttpGet]
         [Route("readGAPinstance/{instance}")]
-        public IHttpActionResult readGAPinstance(string instance)
+        public IHttpActionResult ReadGAPinstance(string instance)
         {
             string res;
             string pathjson = GetJsonPath(instance);
@@ -79,7 +79,7 @@ namespace WebApplication1.Controllers
         }
 
 
-        public string postSomething(object obj)
+        public string PostSomething(object obj)
         {
             string jStr = Convert.ToString(obj);
             var obj1 = JsonConvert.DeserializeObject<dynamic>(jStr);
@@ -136,7 +136,7 @@ namespace WebApplication1.Controllers
 
         [HttpGet]
         [Route("simulatedAnnealing/{instance}")]
-        public int simulatedAnnealing(string instance)
+        public int SimulatedAnnealing(string instance)
         {
             return M.SimulatedAnnealing(GetGAP(instance));
         }
