@@ -176,16 +176,13 @@ namespace WebApplication1.Models
             int i, j;
             double p;
             int k = 10; //costante di Boltzmann
-           
-            int iter = 0;
-
-            double maxTemp = 1000;
+            int coolingSchedule = 1000000;
             int maxIter = 100000;
             double alpha = 0.95; //geometric cooling
-
             double temp = 2;
 
-            //DA QUI
+            int iter = 0;
+
             int bestCost = currentCost;
             int[] bestSol = new int[currentSol.Length];
             int[] newSol = (int[])currentSol.Clone();
@@ -222,7 +219,7 @@ namespace WebApplication1.Models
                     bestSol = (int[])currentSol.Clone();
                 }
 
-                if ((iter % 1000000) == 0)
+                if ((iter % coolingSchedule) == 0)
                 {
                     temp *= alpha;
                 }
