@@ -173,7 +173,8 @@ namespace WebApplication1.Models
 
        public int[] SimulatedAnnealing(int[] currentSol, int currentCost)
        {
-            int i, j, p = 0;
+            int i, j;
+            double p;
             int k = 10; //costante di Boltzmann
            
             int iter = 0;
@@ -184,73 +185,51 @@ namespace WebApplication1.Models
 
             double temp = 2;
 
-
             //DA QUI
             int bestCost = currentCost;
+            int[] bestSol = new int[currentSol.Length];
+            int[] newSol = (int[])currentSol.Clone();
 
             Random rand = new Random(100);
-            int treshold = 0;
 
-            while (iter < maxIter)
-            {               
+            do
+            {
                 iter++;
-                int newCost = bestCost;
-                int isol;
-
-
-                //1000 numero di step decisi da me
-                if ((iter % 10000) == 0)
-                {
-                    temp = alpha * temp;  //decremento temp
-                }
-
-                int[] capleft = (int[]) capacitiesLeft.Clone();
-               
-
-                do
-                {
-                    treshold++;
-                    //generare sol casuale
-                    j = rand.Next(n);    //clienti
-                    isol = currentSol[j];
-                    i = rand.Next(m);    //magazzini
-                    if (treshold == 1000)
-                    {
-                        return currentSol;
-                    }
-                } while (capleft[i] < GAP.req[i, j] || isol == i);
-
-                treshold = 0;
-
-                int[] newSol = (int[]) currentSol.Clone();
+                i = rand.Next(0, m);
+                j = rand.Next(0, n);
                 newSol[j] = i;
-                capleft[i] -= GAP.req[i, j];
-                capleft[isol] += GAP.req[isol, j];
+                int newCost = CheckSol(newSol);
 
-                newCost -= (GAP.cost[isol, j] - GAP.cost[i, j]);
-
-                if (newCost < bestCost)
+                if(newCost <= currentCost)
                 {
-                    currentSol = (int[]) newSol.Clone();
-                    capacitiesLeft = (int[]) capleft.Clone();
-                    bestCost = newCost;
+                    currentCost = newCost;
+                    currentSol = newSol;
                 }
-                else if (capleft[i] >= GAP.req[i, j])
+                else
                 {
-                    //capacità rimanenti
-                    p = (int)Math.Exp(-(newCost - bestCost) / (k * temp));
-
-                    int rnd = rand.Next(0, 100);
-                    if (rnd < p * 100)
+                    p = Math.Exp((-(newCost - currentCost)) / (k*temp));
+                    double rndProb = rand.NextDouble();
+                    if (rndProb < p)
                     {
-                        currentSol = (int[]) newSol.Clone();
-                        capacitiesLeft = (int[]) capleft.Clone();
-                        bestCost = newCost;
+                        currentCost = newCost;
+                        currentSol = newSol;
                     }
                 }
-            }
 
-            return currentSol;
+                if (currentCost < bestCost)
+                {
+                    bestCost = currentCost;
+                    bestSol = (int[])currentSol.Clone();
+                }
+
+                if ((iter % 1000000) == 0)
+                {
+                    temp *= alpha;
+                }
+
+            } while (iter <= maxIter);
+
+            return bestSol;
         }
 
     }
