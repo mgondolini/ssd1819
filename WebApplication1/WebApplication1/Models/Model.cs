@@ -93,7 +93,13 @@ namespace WebApplication1.Models
         public int SimulatedAnnealing(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);
-            return basicHeu.GenerateSimulatedAnnealing();
+            return basicHeu.SimulatedAnnealing();
+        }
+
+        public int TabuSearch(GAPinstance instance)
+        {
+            basicHeu = new BasicHeu(instance);
+            return basicHeu.TabuSearch();
         }
 
     }

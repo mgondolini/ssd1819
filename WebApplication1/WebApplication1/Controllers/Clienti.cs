@@ -141,6 +141,14 @@ namespace WebApplication1.Controllers
             return M.SimulatedAnnealing(GetGAP(instance));
         }
 
+
+        [HttpGet]
+        [Route("tabuSearch/{instance}")]
+        public int TabuSearch(string instance)
+        {
+            return M.TabuSearch(GetGAP(instance));
+        }
+
         public string GetJsonPath(string gap)
         {
             return (string)AppDomain.CurrentDomain.GetData("DataDirectory") + @"\" + gap + ".json"; ;

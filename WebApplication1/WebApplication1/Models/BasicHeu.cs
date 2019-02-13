@@ -118,7 +118,7 @@ namespace WebApplication1.Models
             for (int i = 0; i < m; i++) capleft[i] = GAP.cap[i]; //assegno capacità
             
 
-            for(int j = 0; j< n; j++)
+            for(int j = 0; j < n; j++)
                 z += GAP.cost[sol[j], j]; //soluzione: costo del server per il client
             
         
@@ -164,14 +164,14 @@ namespace WebApplication1.Models
         }
 
         
-       public int GenerateSimulatedAnnealing()
-        {
+       public int SimulatedAnnealing()
+       {
             int z = this.ConstructiveSolution();
-            sol = SimulatedAnnealing(sol, z);
+            sol = SimulatedAnnealingAlgorithm(sol, z);
             return CheckSol(sol);
-        }
+       }
 
-       public int[] SimulatedAnnealing(int[] currentSol, int currentCost)
+       public int[] SimulatedAnnealingAlgorithm(int[] currentSol, int currentCost)
        {
             int i, j;
             double p;
@@ -222,6 +222,94 @@ namespace WebApplication1.Models
                 if ((iter % coolingSchedule) == 0)
                 {
                     temp *= alpha;
+                }
+
+            } while (iter <= maxIter);
+
+            return bestSol;
+        }
+
+        public int TabuSearch()
+        {
+            int z = this.ConstructiveSolution();
+            sol = TabuSearchAlgorithm(sol, z);
+            return CheckSol(sol);
+        }
+
+        public int[] TabuSearchAlgorithm(int[] bestSol, int bestCost) {
+
+            int tabuTenure = 1;
+            int maxIter = 1000;
+            int iter = 0;
+
+            int[] currentSol = new int[n];
+            int[,] tabuList = new int[m, n];
+
+            int currentCost = bestCost;
+            currentSol = (int[])bestSol.Clone();
+
+            do
+            {
+                iter++;
+                int server = 0;
+                int client = 0;
+                int[] bestLocalSol = new int[currentSol.Length];
+                int bestLocalCost = int.MaxValue;
+
+                bool found = false;
+
+                for (int j = 0; j < n; j++)
+                {
+                    for (int i = 0; i < n; i++)
+                    {
+                        int[] solutionToEvaluate = new int[currentSol.Length];
+
+                        solutionToEvaluate = (int[])currentSol.Clone();
+                        solutionToEvaluate[j] = i;
+                        int costSolutionToEvaluate = CheckSol(solutionToEvaluate);
+
+                        // aspiration
+                        if (currentCost < bestCost)
+                        {
+                            bestCost = currentCost;
+                            bestSol = (int[])currentSol.Clone();
+                        }
+
+                        // found solution
+                        if (i != currentSol[j] && (tabuList[i, j] + tabuTenure < iter))
+                        {
+                            if (!found)
+                            {
+                                found = true;
+                                bestLocalSol = (int[])solutionToEvaluate.Clone();
+                                bestLocalCost = costSolutionToEvaluate;
+                                server = i;
+                                client = j;
+                            }
+                            else
+                            {
+                                // check if is better in Neighborhood
+                                if (costSolutionToEvaluate < bestLocalCost)
+                                {
+                                    bestLocalSol = (int[])solutionToEvaluate.Clone();
+                                    bestLocalCost = costSolutionToEvaluate;
+                                    server = i;
+                                    client = j;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                tabuList[server, client] = iter;
+
+                currentSol = (int[])bestLocalSol.Clone();
+                currentCost = bestLocalCost;
+                if (currentCost < bestCost)
+                {
+                    bestCost = currentCost;
+                    bestSol = (int[])currentSol.Clone();
                 }
 
             } while (iter <= maxIter);
