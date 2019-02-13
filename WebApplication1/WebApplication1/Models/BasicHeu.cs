@@ -238,8 +238,8 @@ namespace WebApplication1.Models
 
         public int[] TabuSearchAlgorithm(int[] bestSol, int bestCost) {
 
-            int tabuTenure = 1;
-            int maxIter = 1000;
+            int tabuTenure = 100;
+            int maxIter = 10000;
             int iter = 0;
 
             int[] currentSol = new int[n];
@@ -260,7 +260,7 @@ namespace WebApplication1.Models
 
                 for (int j = 0; j < n; j++)
                 {
-                    for (int i = 0; i < n; i++)
+                    for (int i = 0; i < m; i++)
                     {
                         int[] solutionToEvaluate = new int[currentSol.Length];
 
@@ -276,7 +276,7 @@ namespace WebApplication1.Models
                         }
 
                         // found solution
-                        if (i != currentSol[j] && (tabuList[i, j] + tabuTenure < iter))
+                        if (i != currentSol[j] && (tabuList[server, client] + tabuTenure < iter) && costSolutionToEvaluate < int.MaxValue)
                         {
                             if (!found)
                             {
@@ -298,9 +298,9 @@ namespace WebApplication1.Models
                                 }
                             }
                         }
+                        
                     }
                 }
-
 
                 tabuList[server, client] = iter;
 
@@ -316,6 +316,8 @@ namespace WebApplication1.Models
 
             return bestSol;
         }
+
+
 
     }
 }
