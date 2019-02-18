@@ -1,4 +1,5 @@
 ﻿var GAPinstance;
+var serie;
 
 $(document).ready(function () {
     $("#gap_name").change(function () {
@@ -86,14 +87,14 @@ function tabuSearch() {
     event.preventDefault();
 }
 
-/*
 function readSerie() {
+    serie = $("#serie_name").children("option:selected").val();
     $.ajax({
-        url: "api/Clienti/readSerie",
+        url: "api/Clienti/readSerie" + serie,
         type: "GET",
         contentType: "application/json",
         success: function (result) {
-            alert(result)
+            $("#serie").text("Serie: " + result);
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
@@ -102,8 +103,10 @@ function readSerie() {
             alert(err);
         }
     });
+    event.preventDefault();
 }
 
+/*
 
 function postSomething(id, dato) {
     var options = {};

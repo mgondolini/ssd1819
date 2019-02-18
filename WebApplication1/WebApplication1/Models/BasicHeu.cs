@@ -246,7 +246,8 @@ namespace WebApplication1.Models
             int[,] tabuList = new int[m, n];
 
             int currentCost = bestCost;
-            currentSol = (int[])bestSol.Clone();
+            //currentSol = (int[])bestSol.Clone();
+            Array.Copy(bestSol, currentSol, bestSol.Length);
 
             do
             {
@@ -257,6 +258,7 @@ namespace WebApplication1.Models
                 int bestLocalCost = int.MaxValue;
 
                 bool found = false;
+                bool admissible = true;
 
                 for (int j = 0; j < n; j++)
                 {
@@ -264,7 +266,7 @@ namespace WebApplication1.Models
                     {
                         int[] solutionToEvaluate = new int[currentSol.Length];
 
-                        solutionToEvaluate = (int[])currentSol.Clone();
+                        Array.Copy(currentSol, solutionToEvaluate, currentSol.Length);
                         solutionToEvaluate[j] = i;
                         int costSolutionToEvaluate = CheckSol(solutionToEvaluate);
 
@@ -275,11 +277,15 @@ namespace WebApplication1.Models
                             bestSol = (int[])currentSol.Clone();
                         }
 
+                        //System.Diagnostics.Debug.WriteLine("i "+i+ " currentSol[j] "+ currentSol[j]); //DIVERSI
+                        //System.Diagnostics.Debug.WriteLine((tabuList[i, j] + tabuTenure )+" ------------ "+iter+"-----"+ costSolutionToEvaluate);
                         // found solution
-                        if (i != currentSol[j] && (tabuList[server, client] + tabuTenure < iter) && costSolutionToEvaluate < int.MaxValue)
+                        if (i != currentSol[j] && (tabuList[i, j] + tabuTenure < iter) && costSolutionToEvaluate < int.MaxValue)
                         {
+                            System.Diagnostics.Debug.WriteLine("dentro if");
                             if (!found)
                             {
+                                System.Diagnostics.Debug.WriteLine("not found");
                                 found = true;
                                 bestLocalSol = (int[])solutionToEvaluate.Clone();
                                 bestLocalCost = costSolutionToEvaluate;
@@ -288,6 +294,7 @@ namespace WebApplication1.Models
                             }
                             else
                             {
+                                System.Diagnostics.Debug.WriteLine("found");
                                 // check if is better in Neighborhood
                                 if (costSolutionToEvaluate < bestLocalCost)
                                 {
