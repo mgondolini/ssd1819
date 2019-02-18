@@ -17,17 +17,71 @@ namespace WebApplication1.Controllers
         Models.GAPinstance GAP = new Models.GAPinstance();
         Models.Model M = new Models.Model();
 
-        string connString = "Data Source=tcp:137.204.74.181;Initial Catalog = testDb;User ID=studSSD;Password=studSSD";
-        string factory = "System.Data.SqlClient";
-
-        BasicHeu basicHeu;
-
-        public delegate void viewEventHandler(object sender, string textToWrite);
-        public event viewEventHandler FlushText;
+        private readonly string connString = "Data Source=tcp:137.204.74.181;Initial Catalog = testDb;User ID=studSSD;Password=studSSD";
+        private readonly string factory = "System.Data.SqlClient";
 
         [HttpGet] // in esecuzione solo con un get dal client
-        [ActionName("GetAllClients")] // nome del metodo esposto nella API
+        [Route("readSerie/{serieName}")] // nome del metodo esposto nella API
+        public string ReadSerie(string serieName)
+        {
+            return M.ReadSerie(connString, factory, serieName);
+        }
+        
+        [HttpGet]
+        [Route("constructSolution/{instance}")]
+        public int ConstructSolution(string instance)
+        {
+            return M.ConstructSolution(GetGAP(instance));
+        }
 
+        [HttpGet]
+        [Route("optimization/{instance}")]
+        public int Optimization(string instance)
+        {
+            return M.Opt10(GetGAP(instance));
+        }
+
+        [HttpGet]
+        [Route("simulatedAnnealing/{instance}")]
+        public int SimulatedAnnealing(string instance)
+        {
+            return M.SimulatedAnnealing(GetGAP(instance));
+        }
+
+        [HttpGet]
+        [Route("tabuSearch/{instance}")]
+        public int TabuSearch(string instance)
+        {
+            return M.TabuSearch(GetGAP(instance));
+        }
+
+        public string GetJsonPath(string gap)
+        {
+            return (string)AppDomain.CurrentDomain.GetData("DataDirectory") + @"\" + gap + ".json"; ;
+        }
+
+        public GAPinstance GetGAP(string instance)
+        {
+            string jsonpath = GetJsonPath(instance);
+            return GAP = M.ReadGAPInstance(jsonpath);
+        }
+
+        /*
+        
+        
+        [HttpGet]
+        [Route("readGAPinstance/{instance}")]
+        public IHttpActionResult ReadGAPinstance(string instance)
+        {
+            string res;
+            string pathjson = GetJsonPath(instance);
+            GAP = M.ReadGAPInstance(pathjson);
+            res = GAP.name;
+            return Ok(res);
+        }
+        
+        [HttpGet] // in esecuzione solo con un get dal client
+        [ActionName("GetAllClients")] // nome del metodo esposto nella API
         public string GetAllClients()
         {
             string res;
@@ -58,27 +112,8 @@ namespace WebApplication1.Controllers
 
             return res;
         }
-
-        [HttpGet]
-        [Route("readGAPinstance/{instance}")]
-        public IHttpActionResult ReadGAPinstance(string instance)
-        {
-            string res;
-            string pathjson = GetJsonPath(instance);
-            GAP = M.ReadGAPInstance(pathjson);
-            res = GAP.name;
-            return Ok(res);
-        }
-
-        [HttpGet] // in esecuzione solo con un get dal client
-        [ActionName("readSerie")] // nome del metodo esposto nella API
-        public string readSerie()
-        {
-            string res = M.ReadSerie(connString, factory);
-            return res;
-        }
-
-
+         
+         
         public string PostSomething(object obj)
         {
             string jStr = Convert.ToString(obj);
@@ -119,46 +154,8 @@ namespace WebApplication1.Controllers
                 return numRows;
             }
         }
-
-        [HttpGet]
-        [Route("constructSolution/{instance}")]
-        public int ConstructSolution(string instance)
-        {
-            return M.ConstructSolution(GetGAP(instance));
-        }
-
-        [HttpGet]
-        [Route("optimization/{instance}")]
-        public int Optimization(string instance)
-        {
-            return M.Opt10(GetGAP(instance));
-        }
-
-        [HttpGet]
-        [Route("simulatedAnnealing/{instance}")]
-        public int SimulatedAnnealing(string instance)
-        {
-            return M.SimulatedAnnealing(GetGAP(instance));
-        }
-
-
-        [HttpGet]
-        [Route("tabuSearch/{instance}")]
-        public int TabuSearch(string instance)
-        {
-            return M.TabuSearch(GetGAP(instance));
-        }
-
-        public string GetJsonPath(string gap)
-        {
-            return (string)AppDomain.CurrentDomain.GetData("DataDirectory") + @"\" + gap + ".json"; ;
-        }
-
-        public GAPinstance GetGAP(string instance)
-        {
-            string jsonpath = GetJsonPath(instance);
-            return GAP = M.ReadGAPInstance(jsonpath);
-        }
+         
+         */
 
     }
 }

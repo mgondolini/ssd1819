@@ -35,12 +35,13 @@ namespace WebApplication1.Models
             return GAP;
         }
 
-        public string ReadSerie(string connString, string factory)
+        public string ReadSerie(string connString, string factory, string serieName)
         {
             System.Diagnostics.Debug.WriteLine("connstring " + connString + " factory" + factory);
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
-
-            string res = "";
+            
+            string res = "{";
+            List<string> columns = new List<string>();
 
             using (DbConnection conn = dbFactory.CreateConnection())
             {
@@ -49,17 +50,19 @@ namespace WebApplication1.Models
                     conn.ConnectionString = connString;
                     conn.Open();
                     DbCommand com = conn.CreateCommand();
-                    com.CommandText = "select time from serie";
+                    com.CommandText = "select "+serieName+" from serie";
 
                     DbDataReader reader = com.ExecuteReader();
+
+                    int numcol = reader.FieldCount;
                     while (reader.Read())
                     {
-                        System.Diagnostics.Debug.WriteLine(reader["time"] + "");
-                        res = reader["time"] + "";
-                        goto l0;
+                        for (int i = 0; i < numcol; i++)
+                        {
+                            res += reader[serieName]+", ";
+                        }
                     }
-                        
-
+                    res += "}";
                     reader.Close();
                     conn.Close();
                 }
@@ -73,7 +76,6 @@ namespace WebApplication1.Models
                     if (conn.State == ConnectionState.Open) conn.Close();
                 }
             }
-            l0:
             return res;
         }
 

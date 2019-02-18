@@ -90,7 +90,7 @@ function tabuSearch() {
 function readSerie() {
     serie = $("#serie_name").children("option:selected").val();
     $.ajax({
-        url: "api/Clienti/readSerie" + serie,
+        url: "api/Clienti/readSerie/" + serie,
         type: "GET",
         contentType: "application/json",
         success: function (result) {
