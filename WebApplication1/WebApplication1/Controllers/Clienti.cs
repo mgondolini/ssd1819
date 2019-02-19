@@ -26,7 +26,17 @@ namespace WebApplication1.Controllers
         {
             return M.ReadSerie(connString, factory, serieName);
         }
-        
+
+        [HttpGet] // in esecuzione solo con un get dal client
+        [Route("arimaForecast/{serieName}")] // nome del metodo esposto nella API
+        public string ArimaForecast(string serieName)
+        {
+            string serie = M.ReadSerie(connString, factory, serieName);
+            ArimaForecast arima = new ArimaForecast(serie, 0, 1);
+
+            return arima.forecastComputation(); 
+        }
+
         [HttpGet]
         [Route("constructSolution/{instance}")]
         public int ConstructSolution(string instance)

@@ -40,8 +40,7 @@ namespace WebApplication1.Models
             System.Diagnostics.Debug.WriteLine("connstring " + connString + " factory" + factory);
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
             
-            string res = "{";
-            List<string> columns = new List<string>();
+            string res = "(";
 
             using (DbConnection conn = dbFactory.CreateConnection())
             {
@@ -50,7 +49,8 @@ namespace WebApplication1.Models
                     conn.ConnectionString = connString;
                     conn.Open();
                     DbCommand com = conn.CreateCommand();
-                    com.CommandText = "select "+serieName+" from serie";
+
+                    com.CommandText = "select " + serieName + " from serie";
 
                     DbDataReader reader = com.ExecuteReader();
 
@@ -59,16 +59,18 @@ namespace WebApplication1.Models
                     {
                         for (int i = 0; i < numcol; i++)
                         {
-                            res += reader[serieName]+", ";
+                            res += reader[serieName] + ",";
                         }
                     }
-                    res += "}";
+
+                    res = res.Trim(',');
+                    res += ")";
+
                     reader.Close();
                     conn.Close();
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine( "[dataReader] Error: " + ex.Message);
                     res = "[dataReader] Error: " + ex.Message;
                 }
                 finally
