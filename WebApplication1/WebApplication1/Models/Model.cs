@@ -40,7 +40,7 @@ namespace WebApplication1.Models
             System.Diagnostics.Debug.WriteLine("connstring " + connString + " factory" + factory);
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
             
-            string res = "(";
+            string res = "";
 
             using (DbConnection conn = dbFactory.CreateConnection())
             {
@@ -64,7 +64,6 @@ namespace WebApplication1.Models
                     }
 
                     res = res.Trim(',');
-                    res += ")";
 
                     reader.Close();
                     conn.Close();

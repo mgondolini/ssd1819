@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="Models\ArimaForecast.cs" />
     <Compile Include="Models\BasicHeu.cs" />
+    <Compile Include="Models\CSVwriter.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\GAPinstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

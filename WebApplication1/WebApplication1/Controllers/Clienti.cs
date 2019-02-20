@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
         [Route("readSerie/{serieName}")] // nome del metodo esposto nella API
         public string ReadSerie(string serieName)
         {
-            return M.ReadSerie(connString, factory, serieName);
+            return M.ReadSerie(connString, factory, serieName).ToString();
         }
 
         [HttpGet] // in esecuzione solo con un get dal client
@@ -32,8 +32,7 @@ namespace WebApplication1.Controllers
         public string ArimaForecast(string serieName)
         {
             string serie = M.ReadSerie(connString, factory, serieName);
-            ArimaForecast arima = new ArimaForecast(serie, 0, 1);
-
+            ArimaForecast arima = new ArimaForecast(serieName, 0, 1);
             return arima.forecastComputation(); 
         }
 
