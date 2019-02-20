@@ -38,7 +38,6 @@ namespace WebApplication1.Models
         public string ReadSerie(string connString, string factory, string serieName)
         {
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
-            
             string res = "";
 
             using (DbConnection conn = dbFactory.CreateConnection())
@@ -48,7 +47,6 @@ namespace WebApplication1.Models
                     conn.ConnectionString = connString;
                     conn.Open();
                     DbCommand com = conn.CreateCommand();
-
                     com.CommandText = "select " + serieName + " from serie";
 
                     DbDataReader reader = com.ExecuteReader();
