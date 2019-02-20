@@ -37,7 +37,6 @@ namespace WebApplication1.Models
 
         public string ReadSerie(string connString, string factory, string serieName)
         {
-            System.Diagnostics.Debug.WriteLine("connstring " + connString + " factory" + factory);
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
             
             string res = "";

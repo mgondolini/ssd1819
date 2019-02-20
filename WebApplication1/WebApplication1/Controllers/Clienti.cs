@@ -34,9 +34,19 @@ namespace WebApplication1.Controllers
             string serie = M.ReadSerie(connString, factory, serieName);
             CSVwriter w = new CSVwriter(serieName, serie);
             w.createCSV();
-            //ArimaForecast arima = new ArimaForecast(0, 1);
-            //return arima.forecastComputation();
-            return "vez";
+            Forecast f = new Forecast(4, 0);
+            return f.ArimaForecast();
+        }
+
+        [HttpGet]
+        [Route("NNforecast/{serieName}")] 
+        public string NNForecast(string serieName)
+        {
+            string serie = M.ReadSerie(connString, factory, serieName);
+            CSVwriter w = new CSVwriter(serieName, serie);
+            w.createCSV();
+            Forecast f = new Forecast(4, 0);
+            return f.NNForecast();
         }
 
         [HttpGet]
@@ -77,97 +87,5 @@ namespace WebApplication1.Controllers
             string jsonpath = GetJsonPath(instance);
             return GAP = M.ReadGAPInstance(jsonpath);
         }
-
-        /*
-        
-        
-        [HttpGet]
-        [Route("readGAPinstance/{instance}")]
-        public IHttpActionResult ReadGAPinstance(string instance)
-        {
-            string res;
-            string pathjson = GetJsonPath(instance);
-            GAP = M.ReadGAPInstance(pathjson);
-            res = GAP.name;
-            return Ok(res);
-        }
-        
-        [HttpGet] // in esecuzione solo con un get dal client
-        [ActionName("GetAllClients")] // nome del metodo esposto nella API
-        public string GetAllClients()
-        {
-            string res;
-            Models.GAPinstance GAP = new Models.GAPinstance();
-            Models.Model M = new Models.Model();
-            string pathjson = @"C:\Users\monyg\source\repos\WebApplication1\WebApplication1\App_Data\toy.json";
-            GAP = M.ReadGAPInstance(pathjson);
-            res = GAP.name;
-            return res;
-        }
-
-        [HttpGet] // in esecuzione solo con un get dal client
-        [ActionName("GetCustQuantities")] // nome del metodo esposto
-        public IHttpActionResult GetCustQuantities(int id)
-        {
-            var user = "{\"id\":" + id + "}";
-
-            if (user == null)
-                return NotFound();
-            return Ok(user);
-        }
-
-        public string getItem(string id)
-        {
-            string res = "non trovato";
-
-            res = "{\"id\":" + id + "}";
-
-            return res;
-        }
-         
-         
-        public string PostSomething(object obj)
-        {
-            string jStr = Convert.ToString(obj);
-            var obj1 = JsonConvert.DeserializeObject<dynamic>(jStr);
-            int id = obj1.id;
-            string dato = Convert.ToString(obj1.dato);
-            return "done";
-        }
-
-
-
-        public int execNonQueryViaFactory(string connString, string queryText, string factory)
-        {
-            int numRows = 0;
-            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
-
-            using (DbConnection connection = dbFactory.CreateConnection())
-            {
-                try
-                {
-                    connection.ConnectionString = connString;
-                    connection.Open();
-                    IDbCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = queryText;
-
-                    numRows = cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    if (connection.State == ConnectionState.Open)
-                        connection.Close();
-                }
-                return numRows;
-            }
-        }
-         
-         */
-
     }
 }

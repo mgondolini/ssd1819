@@ -31,8 +31,8 @@ namespace WebApplication1.Models
             }
             //Append to the file.
             StreamWriter appender = new StreamWriter(FILE_PATH + FILE_NAME, true);
-            List<string> source = this.GetValuesList();
-            source.ForEach(elem => appender.WriteLine(elem));
+            List<string> values = this.GetValuesList();
+            values.ForEach(elem => appender.WriteLine(elem));
             appender.Close();
         }
 
@@ -49,8 +49,6 @@ namespace WebApplication1.Models
 
             return l;
         }
-
-
 
     }
 }

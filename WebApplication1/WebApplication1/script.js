@@ -113,7 +113,26 @@ function arimaForecast() {
         type: "GET",
         contentType: "application/json",
         success: function (result) {
-            $("#forecast").text("Forecast: " + result);
+            $("#arima_forecast").text("Arima Forecast: " + result);
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).message;
+            alert(err);
+        }
+    });
+    event.preventDefault();
+}
+
+function NNforecast() {
+    serie = $("#serie_name").children("option:selected").val();
+    $.ajax({
+        url: "api/Clienti/NNforecast/" + serie,
+        type: "GET",
+        contentType: "application/json",
+        success: function (result) {
+            $("#NNforecast").text("NN Forecast: " + result);
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
