@@ -32,8 +32,11 @@ namespace WebApplication1.Controllers
         public string ArimaForecast(string serieName)
         {
             string serie = M.ReadSerie(connString, factory, serieName);
-            ArimaForecast arima = new ArimaForecast(serieName, 0, 1);
-            return arima.forecastComputation(); 
+            CSVwriter w = new CSVwriter(serieName, serie);
+            w.createCSV();
+            //ArimaForecast arima = new ArimaForecast(0, 1);
+            //return arima.forecastComputation();
+            return "vez";
         }
 
         [HttpGet]

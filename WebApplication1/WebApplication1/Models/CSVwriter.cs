@@ -10,76 +10,42 @@ namespace WebApplication1.Models
     public class CSVwriter
     {
         private string serieName;
-        private string serie;
+        private string serieValues;
         public static string FILE_PATH = (string)AppDomain.CurrentDomain.GetData("DataDirectory") + "\\";
+        private static readonly string FILE_NAME = "serie.csv";
 
-        public CSVwriter(string serieName, string serie)
+        public CSVwriter(string serieName, string serieValues)
         {
             this.serieName = serieName;
-            this.serie = serie;
+            this.serieValues = serieValues;
         }
 
         /*Convert data into csv file*/
-        public void toCSVFile()
+        public void createCSV()
         {
             //Overwrite the file, if present.
-            using (StreamWriter writer = new StreamWriter(FILE_PATH + serieName, false))
+            using (StreamWriter writer = new StreamWriter(FILE_PATH + FILE_NAME, false))
             {
                 writer.WriteLine(serieName);
                 writer.Close();
             }
             //Append to the file.
-            StreamWriter appender = new StreamWriter(FILE_PATH + serieName, true);
-            List<double> source = this.chooseSource(serieName);
-            source.ForEach(elem => appender.WriteLine(source));
+            StreamWriter appender = new StreamWriter(FILE_PATH + FILE_NAME, true);
+            List<string> source = this.GetValuesList();
+            source.ForEach(elem => appender.WriteLine(elem));
             appender.Close();
-
         }
 
-        private List<double> chooseSource(string fileName)
+        private List<string> GetValuesList()
         {
-            Debug.Print(fileName);
-            List<double> l = new List<double>();
+            List<string> l = new List<string>();
+            List<string> values = serieValues.Split(',').ToList(); //from string to list
 
-
-            List<string> values = serie.Split(',').ToList(); //from string to list
-            values.Select(double.Parse).ToList();
-
-            //if (fileName == "esempio.csv")
-            //{
-            //    data.ForEach(elem =>
-            //    {
-            //        if (elem.esempio != null)
-            //            l.Add((double)elem.esempio);
-            //    });
-            //}
-
-            //if (fileName == "esempio2.csv")
-            //{
-            //    data.ForEach(elem =>
-            //    {
-            //        if (elem.esempio2 != null)
-            //            l.Add((double)elem.esempio2);
-            //    });
-            //}
-
-            //if (fileName == "gioiellerie.csv")
-            //{
-            //    data.ForEach(elem =>
-            //    {
-            //        if (elem.jewelry != null)
-            //            l.Add((double)elem.jewelry);
-            //    });
-            //}
-
-            //if (fileName == "passeggeri.csv")
-            //{
-            //    data.ForEach(elem =>
-            //    {
-            //        if (elem.Passengers != null)
-            //            l.Add((double)elem.Passengers);
-            //    });
-            //}
+            values.ForEach(elem =>
+            {
+                elem = elem.Replace(".", ",");
+                l.Add(elem);
+            });
 
             return l;
         }

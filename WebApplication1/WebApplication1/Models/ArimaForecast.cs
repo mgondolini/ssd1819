@@ -13,16 +13,16 @@ namespace WebApplication1.Models
 
         private static string dataDirectory = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
         private static int CUSTOM_HEAP_SIZE = 25000000;
-        int frequency; //To be used later
-        int nextValuesToCompute; //To be used later
-        int[] results;
-        string serie;
+        private static string R_HOME = "C:\\Program Files\\R\\R-3.4.4";
+        private int frequency; //To be used later
+        private int nextValuesToCompute; //To be used later
+        private int[] results;
+        private static string fileName = "serie.csv";
 
-        public ArimaForecast(string serie, int frequency, int nextValuesToCompute)
+        public ArimaForecast(int frequency, int nextValuesToCompute)
         {
             this.frequency = frequency;
             this.nextValuesToCompute = nextValuesToCompute;
-            this.serie = serie;
         }
 
         public string forecastComputation()
@@ -40,12 +40,12 @@ namespace WebApplication1.Models
 
         private void computeForecast()
         {
-            string filePath = (dataDirectory + "\\" + serie).Replace("\\", "/");
+            string filePath = (dataDirectory + "\\" + fileName).Replace("\\", "/");
 
             StartupParameter Rinit = new StartupParameter
             {
                 Quiet = true,
-                RHome = "C:\\Program Files\\R\\R-3.4.4",
+                RHome = R_HOME,
                 Interactive = true
             };
             REngine.SetEnvironmentVariables();

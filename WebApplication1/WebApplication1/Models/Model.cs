@@ -59,10 +59,12 @@ namespace WebApplication1.Models
                     {
                         for (int i = 0; i < numcol; i++)
                         {
-                            res += reader[serieName] + ",";
+                            res += reader[serieName] + "-";
                         }
                     }
 
+                    res = res.Replace(',', '.');
+                    res = res.Replace('-', ',');
                     res = res.Trim(',');
 
                     reader.Close();
