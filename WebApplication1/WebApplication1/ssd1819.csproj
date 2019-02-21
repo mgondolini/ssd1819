@@ -103,7 +103,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\ArimaForecast.cs" />
+    <Compile Include="Models\Forecast.cs" />
     <Compile Include="Models\BasicHeu.cs" />
     <Compile Include="Models\CSVwriter.cs" />
     <Compile Include="Models\Model.cs" />
