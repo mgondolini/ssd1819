@@ -14,6 +14,8 @@ namespace WebApplication1.Models
         private static string dataDirectory = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
         private static int CUSTOM_HEAP_SIZE = 25000000;
         private static string R_HOME = "C:\\Program Files\\R\\R-3.4.4";
+        private static string libraries = @"library(tseries)
+                                            library(forecast)";
 
         private int frequency; //To be used later
         private int nextValuesToCompute; //To be used later
@@ -56,18 +58,8 @@ namespace WebApplication1.Models
         {
             string filePath = (dataDirectory + "\\" + fileName).Replace("\\", "/");
 
-            StartupParameter Rinit = new StartupParameter
-            {
-                Quiet = true,
-                RHome = R_HOME,
-                Interactive = true
-            };
-            REngine.SetEnvironmentVariables();
-            REngine engine = REngine.GetInstance(null, true, Rinit);
+            REngine engine = StarEngine();
 
-            string libraries = @"library(tseries)
-                                library(forecast)";
- 
             engine.Evaluate(libraries);
             engine.Evaluate("data <- read.csv(\"" + filePath + "\")");
             engine.Evaluate("myts <- ts(data[,1], frequency = " + 4 + ")");
@@ -82,17 +74,7 @@ namespace WebApplication1.Models
         {
             string filePath = (dataDirectory + "\\" + fileName).Replace("\\", "/");
 
-            StartupParameter Rinit = new StartupParameter
-            {
-                Quiet = true,
-                RHome = R_HOME,
-                Interactive = true
-            };
-            REngine.SetEnvironmentVariables();
-            REngine engine = REngine.GetInstance(null, true, Rinit);
-
-            string libraries = @"library(tseries)
-                                library(forecast)";
+            REngine engine = StarEngine();
 
             engine.Evaluate(libraries);
             engine.Evaluate("data <- read.csv(\"" + filePath + "\")");
@@ -102,6 +84,20 @@ namespace WebApplication1.Models
             engine.Evaluate("mean <- as.integer(NNpred$mean)");
             IntegerVector v = engine.GetSymbol("mean").AsInteger();
             results = v.ToArray();
+        }
+
+        private REngine StarEngine()
+        {
+            StartupParameter Rinit = new StartupParameter
+            {
+                Quiet = true,
+                RHome = R_HOME,
+                Interactive = true
+            };
+            REngine.SetEnvironmentVariables();
+            REngine engine = REngine.GetInstance(null, true, Rinit);
+
+            return engine;
         }
 
     }

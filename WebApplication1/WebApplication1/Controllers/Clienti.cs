@@ -33,7 +33,7 @@ namespace WebApplication1.Controllers
         {
             string serie = M.ReadSerie(connString, factory, serieName);
             CSVwriter w = new CSVwriter(serieName, serie);
-            w.createCSV();
+            w.fillCSV();
             Forecast f = new Forecast(4, 0);
             return f.ArimaForecast();
         }
@@ -44,7 +44,7 @@ namespace WebApplication1.Controllers
         {
             string serie = M.ReadSerie(connString, factory, serieName);
             CSVwriter w = new CSVwriter(serieName, serie);
-            w.createCSV();
+            w.fillCSV();
             Forecast f = new Forecast(4, 0);
             return f.NNForecast();
         }

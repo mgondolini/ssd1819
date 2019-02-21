@@ -277,8 +277,8 @@ namespace WebApplication1.Models
                             bestSol = (int[])currentSol.Clone();
                         }
 
-                        //System.Diagnostics.Debug.WriteLine("i "+i+ " currentSol[j] "+ currentSol[j]); //DIVERSI
-                        //System.Diagnostics.Debug.WriteLine((tabuList[i, j] + tabuTenure )+" ------------ "+iter+"-----"+ costSolutionToEvaluate);
+                        System.Diagnostics.Debug.WriteLine("i " + i + " currentSol[j] " + currentSol[j]); //DIVERSI
+                        System.Diagnostics.Debug.WriteLine((tabuList[i, j] + tabuTenure) + " ------------ " + iter + "-----" + costSolutionToEvaluate);
                         // found solution
                         if (i != currentSol[j] && (tabuList[i, j] + tabuTenure < iter) && costSolutionToEvaluate < int.MaxValue)
                         {
