@@ -30,10 +30,10 @@
                     <button class="btn btn-primary" onclick="tabuSearch()">Tabu Search</button> <br />
                 </div>
             </form>
-            <label id="solution" style="margin-top:20px;">Solution: </label> <br />
-            <label id="optimization">Optimization: </label> <br />
-            <label id="simulatedAnnealing">Simulated Annealing: </label> <br />
-            <label id="tabuSearch">Tabu Search: </label> <br />
+            <label id="solution" style="margin-top:20px; display:block;">Solution: </label> 
+            <label id="optimization" style="display:block;">Optimization: </label> 
+            <label id="simulatedAnnealing" style="display:block;">Simulated Annealing: </label> 
+            <label id="tabuSearch" style="display:block;">Tabu Search: </label>
         </div>
         <div class="well well-lg" id="well">
             <h2>Seleziona la serie storica</h2>
@@ -50,10 +50,9 @@
                     <button class="btn btn-primary" onclick="NNforecast()">NN Forecast</button> <br />
                 </div>
             </form>
-            <label id="serie" style="margin-top:20px; word-break:break-word;">Serie: </label> <br />
-            <label id="arima_forecast" style="margin-top:20px;">Arima Forecast: </label> <br />
-            <label id="NNforecast" style="margin-top:20px;">NN Forecast: </label> <br />
-        </div>
+            <label id="serie" style="margin-top:20px; display:block; word-break:break-word;">Serie: </label> 
+            <label id="arima_forecast" style="margin-top:20px; display:block;">Arima Forecast: </label> 
+            <label id="NNforecast" style="margin-top:20px; display:block;">NN Forecast: </label>
     </div>
 </body>
 </html>
