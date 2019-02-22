@@ -79,6 +79,48 @@ namespace WebApplication1.Models
             return res;
         }
 
+
+        public string GetSerieTime(string connString, string factory)
+        {
+            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(factory);
+            string res = "";
+
+            using (DbConnection conn = dbFactory.CreateConnection())
+            {
+                try
+                {
+                    conn.ConnectionString = connString;
+                    conn.Open();
+                    DbCommand com = conn.CreateCommand();
+                    com.CommandText = "select time from serie";
+
+                    DbDataReader reader = com.ExecuteReader();
+
+                    int numcol = reader.FieldCount;
+                    while (reader.Read())
+                    {
+                        for (int i = 0; i < numcol; i++)
+                        {
+                            res += reader["time"] + ",";
+                        }
+                    }
+                    res = res.Trim(',');
+
+                    reader.Close();
+                    conn.Close();
+                }
+                catch (Exception ex)
+                {
+                    res = "[dataReader] Error: " + ex.Message;
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open) conn.Close();
+                }
+            }
+            return res;
+        }
+
         public int ConstructSolution(GAPinstance instance)
         {
             basicHeu = new BasicHeu(instance);

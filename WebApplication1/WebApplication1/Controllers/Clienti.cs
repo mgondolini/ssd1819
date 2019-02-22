@@ -28,6 +28,13 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet] // in esecuzione solo con un get dal client
+        [Route("getSerieTime")] // nome del metodo esposto nella API
+        public string GetSerieTime()
+        {
+            return M.GetSerieTime(connString, factory);
+        }
+
+        [HttpGet] // in esecuzione solo con un get dal client
         [Route("arimaForecast/{serieName}")] // nome del metodo esposto nella API
         public string ArimaForecast(string serieName)
         {
