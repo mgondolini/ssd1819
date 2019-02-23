@@ -2,6 +2,7 @@
 var serie;
 var time;
 var chart;
+var serieResult;
 
 google.charts.load('current', { packages: ['corechart', 'line'] });
 
@@ -99,8 +100,10 @@ function readSerie() {
         url: "api/Clienti/readSerie/" + serie,
         type: "GET",
         contentType: "application/json",
+        async: false,
         success: function (result) {
             $("#serie").text("Serie: " + result);
+            setSerie(result);
             google.charts.setOnLoadCallback(drawChart(result, serie));
         },
         error: function (xhr, status, p3, p4) {
@@ -121,6 +124,7 @@ function arimaForecast() {
         contentType: "application/json",
         success: function (result) {
             $("#arima_forecast").text("Arima Forecast: " + result);
+            addLinesToChart(result, "arima");
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
@@ -179,6 +183,39 @@ function drawChart(data, serieName) {
     chart.draw(data, options);
 }
 
+function addLinesToChart(result, forecastType) {
+
+    var serie = serieResult.split(',').map(Number);
+    var forecast = result.split('\n').map(Number);
+    alert(forecast);
+    getSerieTime();
+
+    var time = [];
+    for (var i = 0; i < (serie.length + forecast.length); i++) {
+        time[i] = i;
+    }
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'count');
+    data.addColumn('number', 'serie');
+    data.addColumn('number', 'forecast');
+
+    for (i = 0; i < time.length; i++) {
+        data.addRow([time[i], serie[i], forecast[i]]);
+    }
+
+
+
+    var options = {
+        title: forecastType,
+        curveType: 'function',
+        legend: { position: 'bottom' }
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('canvas'));
+    chart.draw(data, options);
+}
+
 
 function getSerieTime() {
     $.ajax({
@@ -200,5 +237,9 @@ function getSerieTime() {
 
 function setTime(result) {
     time = result;
+}
+
+function setSerie(result) {
+    serieResult = result;
 }
 
