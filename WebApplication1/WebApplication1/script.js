@@ -1,6 +1,11 @@
 ﻿var GAPinstance;
 var serie;
 var time;
+var chart;
+
+google.charts.load('current', { packages: ['corechart', 'line'] });
+
+
 
 $(document).ready(function () {
     $("#gap_name").change(function () {
@@ -96,7 +101,7 @@ function readSerie() {
         contentType: "application/json",
         success: function (result) {
             $("#serie").text("Serie: " + result);
-            insertSerieGraph(result, serie);
+            google.charts.setOnLoadCallback(drawChart(result, serie));
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
@@ -147,41 +152,31 @@ function NNforecast() {
 }
 
 
-function insertSerieGraph(data, serieName) {
+function drawChart(data, serieName) {
 
     getSerieTime();
     var serie = data.split(',').map(Number);
-    var timeSerie = time.split(',').map(Number);
 
-    if ($("#line-chart"))
-        $("#line-chart").remove();
+    var time = [];
+    for (var i = 0; i < serie.length; i++) {
+        time[i] = i;
+    }
 
-    $("#canvas").append('<canvas id="line-chart"></canvas>');
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'count');
+    data.addColumn('number', 'serie');
 
-    var canvas = $("#line-chart");
-    var context = canvas[0].getContext('2d');
+    for (i = 0; i < time.length; i++)
+        data.addRow([time[i], serie[i]]);
 
-    chart = new Chart($("#line-chart"), {
-        type: 'line',
-        labels: timeSerie * 10,
-        data: {
-            datasets: [{
-                data: serie,
-                label: serieName,
-                borderColor: "#3e95cd",
-                fill: false
-            },
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: serieName
-            }
-        }
-    });
+    var options = {
+        title: serieName,
+        curveType: 'function',
+        legend: { position: 'bottom' }
+    };
 
-    $('#serie-controls').attr('hidden', false);
+    var chart = new google.visualization.LineChart(document.getElementById('canvas'));
+    chart.draw(data, options);
 }
 
 
