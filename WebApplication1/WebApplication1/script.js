@@ -5,8 +5,6 @@ var serieResult;
 
 google.charts.load('current', { packages: ['corechart', 'line'] });
 
-
-
 $(document).ready(function () {
     $("#gap_name").change(function () {
         $("#solution").text("Solution: ");
@@ -179,7 +177,7 @@ function drawChart(data, serieName) {
         legend: { position: 'bottom' }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('canvas'));
+    var chart = new google.visualization.LineChart(document.getElementById('chart'));
     chart.draw(data, options);
 }
 
@@ -215,21 +213,15 @@ function addLinesToChart(result, serieName, forecastType) {
         j++;
     }
 
-
     var options = {
         title: serieName,
         curveType: 'function',
         legend: { position: 'bottom' }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('canvas'));
+    var chart = new google.visualization.LineChart(document.getElementById('chart'));
     chart.draw(data, options);
 }
-
-function addDotsToChart() {
-
-}
-
 
 function getSerieTime() {
     $.ajax({
