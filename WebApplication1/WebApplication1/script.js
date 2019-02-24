@@ -123,7 +123,7 @@ function arimaForecast() {
         contentType: "application/json",
         success: function (result) {
             $("#arima_forecast").text("Arima Forecast: " + result);
-            addLinesToChart(result, serie);
+            addLinesToChart(result, serie, "arima");
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
@@ -143,6 +143,7 @@ function NNforecast() {
         contentType: "application/json",
         success: function (result) {
             $("#NNforecast").text("NN Forecast: " + result);
+            addLinesToChart(result, serie, "nn");
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
@@ -182,7 +183,7 @@ function drawChart(data, serieName) {
     chart.draw(data, options);
 }
 
-function addLinesToChart(result, serieName) {
+function addLinesToChart(result, serieName, forecastType) {
 
     readSerie();
 
@@ -196,10 +197,14 @@ function addLinesToChart(result, serieName) {
         time[i] = i;
     }
 
+    var type;
+    if (forecastType == "arima") type = "arima";
+    else type = "neural networks";
+
     var data = new google.visualization.DataTable();
-    data.addColumn('number', 'count');
+    data.addColumn('number', 'time');
     data.addColumn('number', 'serie');
-    data.addColumn('number', 'forecast');
+    data.addColumn('number', type);
 
     for (i = 0; i < serie.length; i++) 
         data.addRow([time[i], serie[i], null]);       
