@@ -1,7 +1,6 @@
 ﻿var GAPinstance;
 var serie;
 var time;
-var chart;
 var serieResult;
 
 google.charts.load('current', { packages: ['corechart', 'line'] });
@@ -124,7 +123,7 @@ function arimaForecast() {
         contentType: "application/json",
         success: function (result) {
             $("#arima_forecast").text("Arima Forecast: " + result);
-            addLinesToChart(result, "arima");
+            addLinesToChart(result, serie);
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3;
@@ -183,11 +182,13 @@ function drawChart(data, serieName) {
     chart.draw(data, options);
 }
 
-function addLinesToChart(result, forecastType) {
+function addLinesToChart(result, serieName) {
+
+    readSerie();
 
     var serie = serieResult.split(',').map(Number);
     var forecast = result.split('\n').map(Number);
-    alert(forecast);
+
     getSerieTime();
 
     var time = [];
@@ -200,20 +201,28 @@ function addLinesToChart(result, forecastType) {
     data.addColumn('number', 'serie');
     data.addColumn('number', 'forecast');
 
-    for (i = 0; i < time.length; i++) {
-        data.addRow([time[i], serie[i], forecast[i]]);
+    for (i = 0; i < serie.length; i++) 
+        data.addRow([time[i], serie[i], null]);       
+
+    var j = 0;
+    for (i = serie.length; i < time.length-1; i++) {
+        data.addRow([time[i], null, forecast[j]]);   
+        j++;
     }
 
 
-
     var options = {
-        title: forecastType,
+        title: serieName,
         curveType: 'function',
         legend: { position: 'bottom' }
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('canvas'));
     chart.draw(data, options);
+}
+
+function addDotsToChart() {
+
 }
 
 
