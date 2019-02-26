@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 
-
 namespace ssd1819.Models
 {
     public class Forecast
@@ -17,8 +16,8 @@ namespace ssd1819.Models
         private static string libraries = @"library(tseries)
                                             library(forecast)";
 
-        private int frequency; //To be used later
-        private int periods; //To be used later
+        private int frequency; 
+        private int periods;   
         private int[] results;
         private static string fileName = "serie.csv";
 
