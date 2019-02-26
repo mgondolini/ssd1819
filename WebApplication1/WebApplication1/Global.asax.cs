@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
 
-namespace WebApplication1
+namespace ssd1819
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Net.Http.Headers;
 
-namespace WebApplication1
+namespace ssd1819
 {
     public static class WebApiConfig
     {

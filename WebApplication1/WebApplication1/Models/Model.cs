@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Data;
 
-namespace WebApplication1.Models
+namespace ssd1819.Models
 {
     public class Model
     {

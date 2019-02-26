@@ -7,9 +7,9 @@ using System.Data;
 using System.Data.Common;
 using Newtonsoft.Json;
 using System.IO;
-using WebApplication1.Models;
+using ssd1819.Models;
 
-namespace WebApplication1.Controllers
+namespace ssd1819.Controllers
 {
     [RoutePrefix("api/Clienti")]
     public class ClientiController : ApiController
