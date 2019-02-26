@@ -58,7 +58,7 @@ namespace WebApplication1.Models
         {
             string filePath = (dataDirectory + "\\" + fileName).Replace("\\", "/");
 
-            REngine engine = StarEngine();
+            REngine engine = StartEngine();
 
             engine.Evaluate(libraries);
             engine.Evaluate("data <- read.csv(\"" + filePath + "\")");
@@ -74,7 +74,7 @@ namespace WebApplication1.Models
         {
             string filePath = (dataDirectory + "\\" + fileName).Replace("\\", "/");
 
-            REngine engine = StarEngine();
+            REngine engine = StartEngine();
 
             engine.Evaluate(libraries);
             engine.Evaluate("data <- read.csv(\"" + filePath + "\")");
@@ -86,7 +86,7 @@ namespace WebApplication1.Models
             results = v.ToArray();
         }
 
-        private REngine StarEngine()
+        private REngine StartEngine()
         {
             StartupParameter Rinit = new StartupParameter
             {
