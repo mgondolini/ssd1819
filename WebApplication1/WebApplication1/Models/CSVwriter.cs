@@ -20,8 +20,7 @@ namespace WebApplication1.Models
             this.serieValues = serieValues;
         }
 
-
-        public void fillCSV()
+        public void CreateCSV()
         {
             //Overwrite the file, if present.
             using (StreamWriter writer = new StreamWriter(FILE_PATH + FILE_NAME, false))

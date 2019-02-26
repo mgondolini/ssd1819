@@ -19,6 +19,8 @@ namespace WebApplication1.Controllers
 
         private readonly string connString = "Data Source=tcp:137.204.74.181;Initial Catalog = testDb;User ID=studSSD;Password=studSSD";
         private readonly string factory = "System.Data.SqlClient";
+        private readonly int frequency = 4;
+        private readonly int periods = 8;
 
         [HttpGet] // in esecuzione solo con un get dal client
         [Route("readSerie/{serieName}")] // nome del metodo esposto nella API
@@ -40,8 +42,8 @@ namespace WebApplication1.Controllers
         {
             string serie = M.ReadSerie(connString, factory, serieName);
             CSVwriter w = new CSVwriter(serieName, serie);
-            w.fillCSV();
-            Forecast f = new Forecast(4, 0);
+            w.CreateCSV();
+            Forecast f = new Forecast(frequency, periods);
             return f.ArimaForecast();
         }
 
@@ -51,8 +53,8 @@ namespace WebApplication1.Controllers
         {
             string serie = M.ReadSerie(connString, factory, serieName);
             CSVwriter w = new CSVwriter(serieName, serie);
-            w.fillCSV();
-            Forecast f = new Forecast(4, 0);
+            w.CreateCSV();
+            Forecast f = new Forecast(frequency, periods);
             return f.NNForecast();
         }
 

@@ -68,7 +68,6 @@ namespace WebApplication1.Models
             int[] capleft = new int[n];
             for (int i = 0; i < m; i++) capleft[i] = GAP.cap[i];
 
-
             int[] keys = new int[m];
             int[] index = new int[m];
 
@@ -101,7 +100,6 @@ namespace WebApplication1.Models
 
             lend:
             z = CheckSol(sol);
-            GAP.zub = z;
             return z;
         }
 
@@ -117,10 +115,7 @@ namespace WebApplication1.Models
             int[] capleft = new int[m];
             for (int i = 0; i < m; i++) capleft[i] = GAP.cap[i]; //assegno capacità
             
-
-            for(int j = 0; j < n; j++)
-                z += GAP.cost[sol[j], j]; //soluzione: costo del server per il client
-            
+            for(int j = 0; j < n; j++) z += GAP.cost[sol[j], j]; //soluzione: costo del server per il client
         
             while (isImproved)
             {
@@ -139,11 +134,6 @@ namespace WebApplication1.Models
 
                             System.Diagnostics.Debug.WriteLine("opt10, improvement. z=" + z);
                             isImproved = true;
-
-                            if(z < GAP.zub)
-                            {
-                                GAP.zub = z;
-                            }
                         }
                     }
                 }
@@ -192,9 +182,11 @@ namespace WebApplication1.Models
             do
             {
                 iter++;
+
+                //creo soluzione random
                 i = rand.Next(0, m);
                 j = rand.Next(0, n);
-                newSol[j] = i;
+                newSol[j] = i; //assegno server
                 int newCost = CheckSol(newSol);
 
                 if(newCost <= currentCost)
@@ -221,7 +213,7 @@ namespace WebApplication1.Models
 
                 if ((iter % coolingSchedule) == 0)
                 {
-                    temp *= alpha;
+                    temp *= alpha; //decremento temperatura
                 }
 
             } while (iter <= maxIter);
@@ -236,7 +228,8 @@ namespace WebApplication1.Models
             return CheckSol(sol);
         }
 
-        public int[] TabuSearchAlgorithm(int[] bestSol, int bestCost) {
+        public int[] TabuSearchAlgorithm(int[] bestSol, int bestCost)
+        {
 
             int tabuTenure = 100;
             int maxIter = 10000;
@@ -245,74 +238,60 @@ namespace WebApplication1.Models
             int[] currentSol = new int[n];
             int[,] tabuList = new int[m, n];
 
+            //soluzione corrente = soluzione migliore
             int currentCost = bestCost;
-            //currentSol = (int[])bestSol.Clone();
-            Array.Copy(bestSol, currentSol, bestSol.Length);
+            currentSol = (int[])bestSol.Clone();
 
             do
             {
                 iter++;
                 int server = 0;
                 int client = 0;
+
+                //migliore soluzione locale
                 int[] bestLocalSol = new int[currentSol.Length];
                 int bestLocalCost = int.MaxValue;
 
                 bool found = false;
-                bool admissible = true;
-
                 for (int j = 0; j < n; j++)
                 {
                     for (int i = 0; i < m; i++)
                     {
-                        int[] solutionToEvaluate = new int[currentSol.Length];
+                        int[] nextSol = new int[currentSol.Length];
 
-                        Array.Copy(currentSol, solutionToEvaluate, currentSol.Length);
-                        solutionToEvaluate[j] = i;
-                        int costSolutionToEvaluate = CheckSol(solutionToEvaluate);
+                        //soluzione da valutare
+                        nextSol = (int[])currentSol.Clone();
+                        nextSol[j] = i; //assegno server
+                        int nextCost = CheckSol(nextSol);
 
-                        // aspiration
-                        if (currentCost < bestCost)
+                        //trovo la soluzione se il server è diverso da quello assegnato alla soluzione, il valore non è contenuto nella tabu list
+                        if (i != currentSol[j] && (tabuList[i, j] + tabuTenure) != iter && nextCost < int.MaxValue)
                         {
-                            bestCost = currentCost;
-                            bestSol = (int[])currentSol.Clone();
-                        }
-
-                        System.Diagnostics.Debug.WriteLine("i " + i + " currentSol[j] " + currentSol[j]); //DIVERSI
-                        System.Diagnostics.Debug.WriteLine((tabuList[i, j] + tabuTenure) + " ------------ " + iter + "-----" + costSolutionToEvaluate);
-                        // found solution
-                        if (i != currentSol[j] && (tabuList[i, j] + tabuTenure < iter) && costSolutionToEvaluate < int.MaxValue)
-                        {
-                            System.Diagnostics.Debug.WriteLine("dentro if");
                             if (!found)
                             {
-                                System.Diagnostics.Debug.WriteLine("not found");
                                 found = true;
-                                bestLocalSol = (int[])solutionToEvaluate.Clone();
-                                bestLocalCost = costSolutionToEvaluate;
+                                bestLocalSol = (int[])nextSol.Clone(); //assegno la soluzione locale
+                                bestLocalCost = nextCost;
                                 server = i;
                                 client = j;
                             }
-                            else
+                            else if (nextCost < bestLocalCost)
                             {
-                                System.Diagnostics.Debug.WriteLine("found");
-                                // check if is better in Neighborhood
-                                if (costSolutionToEvaluate < bestLocalCost)
-                                {
-                                    bestLocalSol = (int[])solutionToEvaluate.Clone();
-                                    bestLocalCost = costSolutionToEvaluate;
-                                    server = i;
-                                    client = j;
-                                }
+                                bestLocalSol = (int[])nextSol.Clone(); //assegno la soluzione locale
+                                bestLocalCost = nextCost;
+                                server = i;
+                                client = j;
                             }
                         }
-                        
                     }
                 }
 
-                tabuList[server, client] = iter;
+                tabuList[server, client] = iter; //aggiungo la posizione corrente nella tabuList
 
                 currentSol = (int[])bestLocalSol.Clone();
                 currentCost = bestLocalCost;
+
+                //se il costo della soluzione corrente è minore, diventa la soluzione migliore
                 if (currentCost < bestCost)
                 {
                     bestCost = currentCost;
@@ -323,9 +302,6 @@ namespace WebApplication1.Models
 
             return bestSol;
         }
-
-
-
     }
 }
  

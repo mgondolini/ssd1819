@@ -18,14 +18,14 @@ namespace WebApplication1.Models
                                             library(forecast)";
 
         private int frequency; //To be used later
-        private int nextValuesToCompute; //To be used later
+        private int periods; //To be used later
         private int[] results;
         private static string fileName = "serie.csv";
 
-        public Forecast(int frequency, int nextValuesToCompute)
+        public Forecast(int frequency, int periods)
         {
             this.frequency = frequency;
-            this.nextValuesToCompute = nextValuesToCompute;
+            this.periods = periods;
         }
 
         public string ArimaForecast()
@@ -62,9 +62,9 @@ namespace WebApplication1.Models
 
             engine.Evaluate(libraries);
             engine.Evaluate("data <- read.csv(\"" + filePath + "\")");
-            engine.Evaluate("myts <- ts(data[,1], frequency = " + 4 + ")");
+            engine.Evaluate("myts <- ts(data[,1], frequency = " + frequency + ")");
             engine.Evaluate("ARIMAfit1 <- auto.arima(myts, stepwise = FALSE, approximation = FALSE)");
-            engine.Evaluate("myfc <- forecast(ARIMAfit1, h = " + 8 + ")");
+            engine.Evaluate("myfc <- forecast(ARIMAfit1, h = " + periods + ")");
             engine.Evaluate("mean <- as.integer(myfc$mean)");
             IntegerVector v = engine.GetSymbol("mean").AsInteger();
             results = v.ToArray();
@@ -78,9 +78,9 @@ namespace WebApplication1.Models
 
             engine.Evaluate(libraries);
             engine.Evaluate("data <- read.csv(\"" + filePath + "\")");
-            engine.Evaluate("myts <- ts(data[,1], frequency = " + 4 + ")");
+            engine.Evaluate("myts <- ts(data[,1], frequency = " + frequency + ")");
             engine.Evaluate("NNfit <- nnetar(myts)");
-            engine.Evaluate("NNpred <- forecast(NNfit, h = " + 8 + ")");
+            engine.Evaluate("NNpred <- forecast(NNfit, h = " + periods + ")");
             engine.Evaluate("mean <- as.integer(NNpred$mean)");
             IntegerVector v = engine.GetSymbol("mean").AsInteger();
             results = v.ToArray();

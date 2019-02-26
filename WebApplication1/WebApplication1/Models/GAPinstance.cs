@@ -14,7 +14,6 @@ namespace WebApplication1.Models
         public int[,] req;
         public int[] cap;
         public int[] sol;
-        public int zub;
         public int n; //n client
         public int m; //m sever
     }
