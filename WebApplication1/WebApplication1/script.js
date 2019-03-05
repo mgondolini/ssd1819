@@ -12,6 +12,12 @@ $(document).ready(function () {
         $("#simulatedAnnealing").text("Simulated Annealing: ");
         $("#tabuSearch").text("Tabu Search: ");
     });
+
+    $("#serie_name").change(function () {
+        $("#serie").text("Serie: ");
+        $("#arima_forecast").text("Arima Forecast: ");
+        $("#NNforecast").text("NN Forecast: ");
+    });
 });
 
 
