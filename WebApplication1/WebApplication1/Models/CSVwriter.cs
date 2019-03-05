@@ -22,13 +22,13 @@ namespace ssd1819.Models
 
         public void CreateCSV()
         {
-            //Overwrite the file, if present.
+            //Overwrite the file when present
             using (StreamWriter writer = new StreamWriter(FILE_PATH + FILE_NAME, false))
             {
                 writer.WriteLine(serieName);
                 writer.Close();
             }
-            //Append to the file.
+
             StreamWriter appender = new StreamWriter(FILE_PATH + FILE_NAME, true);
             List<string> values = this.GetValuesList();
             values.ForEach(elem => appender.WriteLine(elem));
